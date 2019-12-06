@@ -1,0 +1,71 @@
+[
+    {
+      "id": "otp",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "label": "OTP",
+          "required": true,
+          "placeholder": "Enter OTP",
+          "fullWidth": true,
+          "autoFocus": true,
+          "type": "number",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."},
+          "maxLength": 6,
+          "minLength": 6
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "password",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "required": true,
+          "label":"New Password",
+          "placeholder": "Enter New Password",
+          "fullWidth": true,
+          "type": "password",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": true
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "re-password",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "required": true,
+          "label":"Confirm Password",
+          "placeholder": "Re-Enter Password",
+          "fullWidth": true,
+          "type": "password",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": true
+        },
+        "valid": true
+      }
+    }
+  ]

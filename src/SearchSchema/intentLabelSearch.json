@@ -1,0 +1,17 @@
+[
+  {
+    "id": "intent_label",
+    "config": {
+      "elementType": "input",
+      "grid": 7,
+      "label":"Label Name",
+      "placeholder": "Label Name",
+      "helperText": "",
+      "value": "",
+      "validation": {
+        "required": true
+      },
+      "valid": true
+    }
+  }
+]

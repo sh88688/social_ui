@@ -1,0 +1,33 @@
+[
+    {
+      "id": "appName",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"App Name",
+        "placeholder": "Enter Name",
+        "helperText": "",
+        "value": "",
+        "autoFocus":true,
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+        "id": "packageName",
+        "config": {
+          "elementType": "input",
+          "grid": 6,
+          "label":"Package Name",
+          "placeholder": " com.yourapp.tech",
+          "helperText": "",
+          "value": "",
+          "validation": {
+            "required": {"value": true,"msg":"This field is required."}
+          },
+          "valid": true
+        }
+      }
+  ]

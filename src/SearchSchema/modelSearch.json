@@ -1,0 +1,33 @@
+[
+  {
+    "id": "agent_name",
+    "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"Model Name",
+        "placeholder": "Model Name",
+        "autoFocus": true,
+        "helperText": "",
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+    }
+  },
+  {
+    "id": "agent_label",
+    "config": {
+      "elementType": "input",
+      "grid": 6,
+      "label": "Model Label",
+      "placeholder": "Model Label",
+      "helperText": "",
+      "value": "",
+      "validation": {
+        "required": {"value": false,"msg":"This field is required."}
+      },
+      "valid": true
+    }
+  }
+]

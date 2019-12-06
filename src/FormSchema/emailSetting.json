@@ -1,0 +1,40 @@
+[
+    {
+      "id": "news_tips",
+      "config": {
+          "elementType": "checkbox",
+          "grid": 7,
+          "label": "News and tips",
+          "helperText": "",
+          "value": true,
+          "validation": {
+          },
+          "valid": true
+      }
+    },
+    {
+        "id": "feedback_testing",
+        "config": {
+            "elementType": "checkbox",
+            "grid": 6,
+            "label": "Feedback and testing",
+            "helperText": "",
+            "value": false,
+            "validation": {
+            },
+            "valid": true
+        }
+      },
+      {
+        "id": "update",
+        "config": {
+            "elementType": "button",
+            "grid": 6,
+            "label": "Update",
+            "float":"right",
+            "color": "red",
+            "variant": "outlined"
+        }
+      }
+]
+  

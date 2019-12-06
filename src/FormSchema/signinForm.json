@@ -1,0 +1,41 @@
+[
+    {
+      "id": "email",
+      "config": {
+          "elementType": "input",
+          "grid": 12,
+          "label": "Email",
+          "required": true,
+          "placeholder": "Enter your mobile/Email",
+          "fullWidth": true,
+          "autoFocus": true,
+          "autoComplete": "email",
+          "type": "text",
+          "helperText": "",
+          "value": "",
+          "validation": {
+            "required": {"value": true,"msg":"This field is required."}
+          },
+          "valid": true
+      }
+    },
+    {
+      "id": "password",
+      "config": {
+          "elementType": "input",
+          "grid": 12,
+          "label": "Password",
+          "required": true,
+          "placeholder": "Enter your password",
+          "fullWidth": true,
+          "autoComplete": "current-password",
+          "type": "password",
+          "helperText": "",
+          "value": "",
+          "validation": {
+            "required": {"value": true,"msg":"This field is required."}
+          },
+          "valid": true
+      }
+    }
+  ]

@@ -1,0 +1,124 @@
+[
+    {
+      "id": "user_name",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"User Name",
+        "placeholder": "Enter User Name",
+        "helperText": "",
+        "value": "",
+        "autoFocus":true,
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "user_password",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"Password",
+        "placeholder": "Enter Password",
+        "helperText": "",
+        "value": "",
+        "autoFocus":true,
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "user_email",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"Email",
+        "placeholder": "Enter User Email",
+        "helperText": "",
+        "value": "",
+        "autoFocus":true,
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "user_phone",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"Mobile",
+        "placeholder": "Enter Mobile No",
+        "helperText": "",
+        "value": "",
+        "autoFocus":true,
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "department",
+      "config": {
+        "elementType": "multi-select",
+        "grid": 6,
+        "options": [
+        {
+        "value": "Development",
+        "displayValue": "Development"
+        },
+        {
+        "value": "Sales",
+        "displayValue": "Sales"
+        },
+        {
+          "value": "Support",
+          "displayValue": "Support"
+          }
+        ],
+        "label": "Department",
+        "placeholder": "Select Repartment",
+        "helperText": "",
+        "value": [],
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+     {
+      "id": "role",
+      "config": {
+        "elementType": "multi-select",
+        "grid": 6,
+        "options": [
+        {
+        "value": "Admin",
+        "displayValue": "Admin"
+        },
+        {
+        "value": "Agent",
+        "displayValue": "Agent"
+        },
+        {
+          "value": "Team Lead",
+          "displayValue": "Team Lead"
+          }
+        ],
+        "label": "Role",
+        "placeholder": "Select Role",
+        "helperText": "",
+        "value": [],
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    }
+  ]

@@ -1,0 +1,84 @@
+[
+  {
+    "id": "first_name",
+    "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label": "First Name",
+        "placeholder": "Your First Name",
+        "type": "text",
+        "helperText": "",
+        "value": "Shivam",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+    }
+  },
+  {
+    "id": "last_name",
+    "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label": "Last Name",
+        "placeholder": "Your Last Name",
+        "type": "text",
+        "helperText": "",
+        "value": "Sharma",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+    }
+  },
+  {
+    "id": "email",
+    "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label": "Email",
+        "placeholder": "Your E-mail",
+        "autoComplete": "email",
+        "type": "email",
+        "helperText": "",
+        "value": "shivam@c-zentrix.com",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+    }
+  },
+  {
+    "id": "company",
+    "config": {
+        "elementType": "input",
+        "grid": 12,
+        "label": "Company",
+        "placeholder": "Your Company",
+        "type": "text",
+        "helperText": "",
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+    }
+  },
+  {
+    "id": "phone",
+    "config": {
+        "elementType": "input",
+        "grid":6,
+        "label": "Phone",
+        "placeholder": "Your Phone",
+        "type": "tel",
+        "helperText": "",
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+    }
+  }
+  
+]

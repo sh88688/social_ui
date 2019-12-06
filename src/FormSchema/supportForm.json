@@ -1,0 +1,99 @@
+[
+  {
+      "id": "request_type",
+      "config": {
+        "elementType": "native-select",
+        "grid": 6,
+        "label": "Request Type",
+        "placeholder":"-- Select --",
+        "helperText": "",
+        "value": "",
+        "options": [
+          {
+            "value": "Troubleshooting ",
+            "displayValue": " Troubleshooting"
+          },
+          {
+            "value": "Guidance ",
+            "displayValue": " Guidance"
+          },
+          {
+            "value": "Bug ",
+            "displayValue": " Bug"
+          }
+        ],
+        "validation": {
+          "required": {"value": true,"msg":"required"}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "priority_name",
+      "config": {
+        "elementType": "native-select",
+        "grid": 6,
+        "label": "Priority",
+        "placeholder":"-- Select --",
+        "helperText": "",
+        "value": "",
+        "options": [
+          {
+            "value": "High ",
+            "displayValue": " High"
+          },
+          {
+            "value": "Medium ",
+            "displayValue": " Medium"
+          },
+          {
+            "value": "Low ",
+            "displayValue": " Low"
+          }
+        ],
+        "validation": {
+          "required": {"value": true,"msg":"required"}
+        },
+        "valid": true
+      }
+    },
+       {
+      "id": "model",
+      "config": {
+        "elementType": "native-select",
+        "grid": 6,
+        "label": "Model (optional)",
+        "placeholder":"-- Select --",
+        "helperText": "",
+        "value": "",
+        "options": [
+          {
+            "value": "Test",
+            "displayValue": "Test"
+          }
+        
+        ],
+        "validation": {
+          "required": {"value": false}
+        },
+        "valid": true
+      }
+    },
+    {
+    
+		"id": "problem_reported",
+		"config": {
+			"elementType": "textarea",
+			"grid": 11,
+			"label": "Description",
+			"placeholder": "Start Typing",
+			"rows": 5,
+			"helperText": "",
+			"value": "",
+			"validation": {
+			"required": {"value": true,"msg":"required"}
+			},
+			"valid": true
+		}  
+    }
+  ]

@@ -1,0 +1,102 @@
+[
+    {
+      "id": "full_name",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "label": "Name",
+          "required": true,
+          "placeholder": "Enter your name",
+          "fullWidth": true,
+          "autoFocus": true,
+          "autoComplete": "name",
+          "type": "text",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": true
+        },
+        "valid": true,
+        "touched": false
+      }
+    },
+    {
+      "id": "mobile",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "label": "Mobile",
+          "required": true,
+          "placeholder": "Enter your mobile",
+          "fullWidth": true,
+          "autoComplete": "mobile",
+          "type": "tel",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": true,
+          "maxLength":10,
+          "minLength":10,
+          "isDigit":true
+        },
+        "valid": true,
+        "touched": false
+      }
+    },
+    {
+      "id": "email",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "label": "Email",
+          "required": true,
+          "placeholder": "Enter your email",
+          "fullWidth": true,
+          "autoComplete": "email",
+          "type": "email",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": true,
+          "isEmail":true
+        },
+        "valid": true,
+        "touched": false
+      }
+    },
+    {
+      "id": "company_name",
+      "config": {
+        "elementType": "input",
+        "grid": 12,
+        "elementConfig": {
+          "variant": "standard",
+          "margin": "dense",
+          "label": "Company Name",
+          "required": true,
+          "placeholder": "Enter Company Name",
+          "fullWidth": true,
+          "type": "text",
+          "helperText": ""
+        },
+        "value": "",
+        "validation": {
+          "required": true
+        },
+        "valid": true,
+        "touched": false
+      }
+    }
+  ]
