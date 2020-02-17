@@ -92,7 +92,7 @@ class SearchBuilder extends React.Component {
       event.preventDefault();
       //Checking validity
       let didFormValid = isFormValid(this.state.searchForm);
-      console.log(didFormValid)
+      //console.log(didFormValid)
       this.setState({
         searchForm: didFormValid.validatedForm,
       });
@@ -105,6 +105,9 @@ class SearchBuilder extends React.Component {
           filter[elem.id] = elem.config.value;
         }) 
         this.props.search(filter);
+        this.setState({
+          expanded: false,
+        });
       }
 
     }
@@ -114,7 +117,7 @@ class SearchBuilder extends React.Component {
      this.props.search({});
     }
     handleFormState = (updatedFormState,index) =>{
-      console.log("search form");
+      //console.log("search form");
       };
 
   render(){

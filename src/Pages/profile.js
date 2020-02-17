@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 //Material UI
-import {withStyles,Grid, Button} from "../theme/muiComponents";
+import {withStyles, Grid} from "../theme/muiComponents";
 //Icons Material UI
 import {ProfileIcon} from "../theme/muiIcons";
 
@@ -16,6 +16,8 @@ import FormBlockBuilder from '../Components/FormBlockBuilder';
 
 //import Json Schema
 import formJson from '../FormSchema/profileForm.json';
+import {SERVER_IP, PROTOCOL} from '../Configs/apiConf';
+import fetchCall from '../Components/FetchCaller';
 
 //CSS Styles
 const styles = theme => ({
@@ -62,7 +64,7 @@ class Profile extends React.Component {
             ADD_FLAG:true,
             EDIT_FLAG: false,
             EDIT_SELECTED: null,
-            IS_LOADING:false,
+            IS_LOADING: false,
             DATA_ARRAY:[],
             DATA_COUNT: "",
             NO_DATA_CONTENT: Intial_NODATA,
@@ -72,15 +74,31 @@ class Profile extends React.Component {
 //REACT 
 componentDidMount()
 {
-    //   let filter = {};
-    //   GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Intial_NODATA, this);
+  this.getProfileInfo(this.props.clientId);
 }
 
 //<==== HANDLERS ====>
 handleFormState = (updatedFormState,index) =>{
-	console.log(`onChange ${System_Constants.MODULE_NAME} form`);
+	//console.log(`onChange ${System_Constants.MODULE_NAME} form`);
 }
-
+getProfileInfo = (key) => {
+  this.setState({IS_LOADING : true});
+  const fetchCallOptions = {
+    method : "GET"
+  };
+  const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/getProfile.php?cl_key=${key}`);
+  fetchCall(url,fetchCallOptions,"json").then((RESPONSE) => {   
+    const formCopy = [...this.state.dataForm];
+    for(let key in RESPONSE){
+      let formIndex = formCopy.findIndex( elem => elem.id === key);
+      formCopy[formIndex].config.value = RESPONSE[key];
+    }
+    this.setState({ dataForm : formCopy, IS_LOADING : false});
+  },
+  (error) => {
+    //console.log(error);
+  });
+}
 render(){
   const { classes } = this.props;
   const uiForm = (
@@ -103,11 +121,13 @@ render(){
     <div className={classes.rootDiv}>
     <AppBarBuilder 
       IS_LOADING={this.state.IS_LOADING}
+      PARENT={this.props.PARENT}
       headerTitle={System_Constants.MODULE_NAME}
       headerIcon={ProfileIcon} />
     
     <main className={classes.content}>
       <div className={classes.toolbar} />
+      {!this.state.IS_LOADING &&
       <Grid 
             container 
             direction="row"
@@ -118,13 +138,10 @@ render(){
                <FormBlockBuilder 
                 title="Your Profile"
                 formState={this.state.ADD_FLAG}
-                Form={uiForm} 
-                bottomBtn={ <Button variant="contained" className={classes.button} color="secondary">
-               Save
-              </Button>}
+                Form={uiForm}
                 />
              {/* End FormBlock here*/}
-      </Grid>
+      </Grid>}
     </main>
 
     </ div>

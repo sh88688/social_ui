@@ -1,11 +1,11 @@
 import React from 'react';
 //Material UI
-import {makeStyles,Typography,Paper,List,ListItem,ListItemText,ListSubheader,IconButton,Popover,Icon,ListItemAvatar,Avatar} from "../theme/muiComponents";
+import {withStyles,Typography,Paper,List,ListItem,ListItemText,ListSubheader,IconButton,Popover,Icon,ListItemAvatar,Avatar} from "../theme/muiComponents";
 //Icons Material UI
-import {CloseIcon,ShopIcon} from "../theme/muiIcons";
+import {CloseIcon, ShopIcon, FacebookIcon, PeopleIcon, DescriptionIcon} from "../theme/muiIcons";
 
 
-const useStyles = makeStyles(theme => ({
+const style = theme => ({
   text: {
     padding: theme.spacing(2, 2, 0),
   },
@@ -54,24 +54,54 @@ const useStyles = makeStyles(theme => ({
     top: "15px"
   },
 
-}));
+});
 
-export default function NotificationTray(props) {
-  const classes = useStyles();
-  const MODULE_ICON = {"google_play": ShopIcon};
-console.log("%c ==> NOTIFICATION-TRAY !!","color: seagreen;font-weight: 800;");
-console.table(props.data);
-  let listData = null; 
-    if(props.data.length !== 0)
+
+ class NotificationTray extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      wrapperRef : null
+    }
+
+  }
+  setWrapperRef = (node) => {
+    //console.log('node',node);
+    this.setState({wrapperRef : node});
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+
+  handleClickOutside = (event) => {
+
+    if(this.node && this.node.contains(event.target))
     {
-        listData = props.data.map((data,index) => (
+      return;
+    }
+    else if(this.node && !this.node.contains(event.target)){
+      //console.log('clickout');
+      this.props.close();
+    }
+  }
+  render(){
+    const {classes} = this.props;
+  const MODULE_ICON = {"google_play": ShopIcon, "facebook" : FacebookIcon, "/users" : PeopleIcon, "/templates" : DescriptionIcon};
+  //console.log("%c ==> NOTIFICATION-TRAY !!","color: seagreen;font-weight: 800;");
+  //console.table(this.props.data);
+  let listData = null; 
+    if(this.props.data.length !== 0)
+    {
+        listData = this.props.data.map((data,index) => (
             <React.Fragment key={index}>
               {index === 0 && <ListSubheader className={classes.subheader}>Today</ListSubheader>}
               {index === 3 && <ListSubheader className={classes.subheader}>Yesterday</ListSubheader>}
               <ListItem button>
               <ListItemAvatar>
                 <Avatar className={classes.avatar}>
-                <Icon className={classes.icon}  component={MODULE_ICON[data.moduleInfo.subModule]} />
+                <Icon className={classes.icon}  component={(data.moduleInfo.subModule ? MODULE_ICON[data.moduleInfo.subModule] : MODULE_ICON[data.moduleInfo.module])} />
                 </Avatar>
               </ListItemAvatar>
                 <ListItemText primary={data.statusMsg} secondary={`by ${data.dataInfo.action_by} at ${new Date(data.dataInfo.action_on * 1000).toLocaleTimeString()}`} />
@@ -85,12 +115,13 @@ console.table(props.data);
         <ListItemText primary="No Notification Yet!" />
       </ListItem>
     }
-  return (
+    return (
       <Popover
         id={1}
-        open={props.open}
-        anchorEl={props.anchorEl}
-        onClose={props.close}
+        
+        open={this.props.open}
+        anchorEl={this.props.anchorEl}
+        
         className={classes.popover}
         anchorOrigin={{
           vertical: 'bottom',
@@ -101,11 +132,13 @@ console.table(props.data);
           horizontal: 'left',
         }}
       >
-        <Paper square className={classes.paper}>
+        <Paper 
+        ref={node => this.node = node}
+        square className={classes.paper}>
         <Typography className={classes.text} variant="h6" gutterBottom>
           Notifications
         </Typography>
-        <IconButton size="small" className={classes.closeBtn} onClick={props.close}>
+        <IconButton size="small" className={classes.closeBtn} onClick={this.props.close}>
             <CloseIcon />
         </IconButton>
         <List className={classes.list}>
@@ -114,4 +147,8 @@ console.table(props.data);
       </Paper>  
       </Popover>
   );
+  }
+  
 }
+
+export default withStyles(style)(NotificationTray);

@@ -23,7 +23,7 @@
           }
         ],
         "validation": {
-          "required": {"value": true,"msg":"required"}
+          "required": {"value": true,"msg":"Request type is required"}
         },
         "valid": true
       }
@@ -52,26 +52,45 @@
           }
         ],
         "validation": {
-          "required": {"value": true,"msg":"required"}
+          "required": {"value": true,"msg":"Priority is required"}
         },
         "valid": true
       }
     },
        {
-      "id": "model",
+      "id": "module",
       "config": {
         "elementType": "native-select",
         "grid": 6,
-        "label": "Model (optional)",
+        "label": "Module (optional)",
         "placeholder":"-- Select --",
         "helperText": "",
         "value": "",
         "options": [
           {
-            "value": "Test",
-            "displayValue": "Test"
-          }
-        
+            "value": "facebook",
+            "displayValue": "Facebook"
+          },
+          {
+            "value": "google_play",
+            "displayValue": "Google Play"
+          },
+          {
+            "value": "agents",
+            "displayValue": "Agents"
+          },
+          {
+            "value": "templates",
+            "displayValue": "Templates"
+          },
+          {
+            "value": "integration",
+            "displayValue": "Integration"
+          },
+          {
+            "value": "account",
+            "displayValue": "Account"
+          }  
         ],
         "validation": {
           "required": {"value": false}
@@ -91,7 +110,7 @@
 			"helperText": "",
 			"value": "",
 			"validation": {
-			"required": {"value": true,"msg":"required"}
+			"required": {"value": true,"msg":"Description is required"}
 			},
 			"valid": true
 		}  

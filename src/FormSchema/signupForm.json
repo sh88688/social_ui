@@ -4,7 +4,6 @@
       "config": {
         "elementType": "input",
         "grid": 12,
-        "elementConfig": {
           "variant": "standard",
           "margin": "dense",
           "label": "Name",
@@ -14,14 +13,13 @@
           "autoFocus": true,
           "autoComplete": "name",
           "type": "text",
-          "helperText": ""
-        },
-        "value": "",
-        "validation": {
-          "required": true
-        },
-        "valid": true,
-        "touched": false
+          "helperText": "",
+          "value": "",
+          "validation": {
+            "required": {"value": true,"msg":"This field is required."}
+          },
+          "valid": true,
+          "touched": false
       }
     },
     {
@@ -29,7 +27,6 @@
       "config": {
         "elementType": "input",
         "grid": 12,
-        "elementConfig": {
           "variant": "standard",
           "margin": "dense",
           "label": "Mobile",
@@ -38,14 +35,13 @@
           "fullWidth": true,
           "autoComplete": "mobile",
           "type": "tel",
-          "helperText": ""
-        },
-        "value": "",
-        "validation": {
-          "required": true,
-          "maxLength":10,
-          "minLength":10,
-          "isDigit":true
+          "helperText": "",
+          "value": "",
+          "validation": {
+            "required": {"value": true,"msg":"This field is required."},
+            "maxLength": {"value": 10,"msg":"Please enter no more 10 characters."},
+            "minLength": {"value": 10,"msg":"Please enter 10 atleast characters."},
+            "isDigit": {"value": true,"msg":"Please enter only digits."}
         },
         "valid": true,
         "touched": false
@@ -56,21 +52,19 @@
       "config": {
         "elementType": "input",
         "grid": 12,
-        "elementConfig": {
-          "variant": "standard",
-          "margin": "dense",
-          "label": "Email",
-          "required": true,
-          "placeholder": "Enter your email",
-          "fullWidth": true,
-          "autoComplete": "email",
-          "type": "email",
-          "helperText": ""
-        },
+        "variant": "standard",
+        "margin": "dense",
+        "label": "Email",
+        "required": true,
+        "placeholder": "Enter your email",
+        "fullWidth": true,
+        "autoComplete": "email",
+        "type": "email",
+        "helperText": "",
         "value": "",
-        "validation": {
-          "required": true,
-          "isEmail":true
+        "validation": { 
+          "required": {"value": true,"msg":"This field is required."},
+          "isEmail": {"value": true,"msg":"Please enter a valid e-mail."}
         },
         "valid": true,
         "touched": false
@@ -81,19 +75,17 @@
       "config": {
         "elementType": "input",
         "grid": 12,
-        "elementConfig": {
-          "variant": "standard",
-          "margin": "dense",
-          "label": "Company Name",
-          "required": true,
-          "placeholder": "Enter Company Name",
-          "fullWidth": true,
-          "type": "text",
-          "helperText": ""
-        },
+        "variant": "standard",
+        "margin": "dense",
+        "label": "Company Name",
+        "required": true,
+        "placeholder": "Enter Company Name",
+        "fullWidth": true,
+        "type": "text",
+        "helperText": "",
         "value": "",
         "validation": {
-          "required": true
+          "required": {"value": true,"msg":"This field is required."}
         },
         "valid": true,
         "touched": false

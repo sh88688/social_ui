@@ -1,6 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-// import base64  from 'base-64';
 
 //Material UI
 import {withStyles,Typography,Paper,Grid,Avatar,CssBaseline,Box} from "../theme/muiComponents";
@@ -23,7 +21,7 @@ import SnackbarBuilder from '../Components/SnackbarBuilder';
 import formJsonResetter from '../Components/JsonResetter';
 import CircularProgress from '@material-ui/core/CircularProgress';
 //others
-import cover from '../assets/preview.jpg';
+import cover from '../assets/cover.jpg';
 import {SERVER_IP, PROTOCOL, API_URL} from '../Configs/apiConf';
 
 let Client_IP = "";
@@ -56,7 +54,7 @@ const styles = theme => ({
     color: theme.palette.common.main
   },
   image: {
-    backgroundImage: `url('https://assets.materialup.com/uploads/b9e3994c-0753-4287-bad3-14098d2539d6/preview.jpg')`,
+    backgroundImage: `url(${cover})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -105,16 +103,11 @@ class Login extends React.Component {
       isLoggedIn:false
     };
 
-    /*
-    //Getting Server IP from PHP
-    const url = new URL('http://172.16.3.46/CZ_SOCIAL/chatbot_ui/src/Login/server.php');
-    fetchCall(url,"text").then((data) => {
-      Client_IP = data;
-    });
-    */
-    
   }
 
+  componentDidMount(){
+  }
+  
   handleSigninSubmit = (event) => {
     event.preventDefault();
     //Checking Validity
@@ -130,36 +123,33 @@ class Login extends React.Component {
    formData.append('removeSession','1');
    formData.append('login_type','crm');
    formData.append('clientIP',Client_IP);
-  //  let postData = JSON.stringify(formData);
-   //Encode into base64
-    //~ postData = base64.encode(postData);
-    //concat with parameters
+    //  let postData = JSON.stringify(formData);
+    //Encode into base64
+      //~ postData = base64.encode(postData);
+      //concat with parameters
    //~ let queryParam = `postData=${postData}`;
    
-   if (didFormValid.formValidity) {  
-    this.setState({
-      isLoading:true
-    });
+    if (didFormValid.formValidity) {  
+      this.setState({
+        isLoading:true
+      });
     //~ const url = new URL(`${PROTOCOL}${SERVER_IP}${API_URL}${queryParam}`);
-    const url = new URL(`${PROTOCOL}${SERVER_IP}${API_URL}`);
-    console.log('apicall',`${PROTOCOL}${SERVER_IP}${API_URL}`);
+    const url = new URL(`${PROTOCOL}${SERVER_IP}${API_URL}?mode=login`);
     const fetchCallOptions = {
 		method: "POST",
     body: formData,
     credentials: 'include' 
-	};
+	  };
     fetchCall(url, fetchCallOptions, "json").then((result) => {
-      console.log (result);
-      console.log(document.cookie);
           if(result.appCode === 200)
           {
-              // localStorage.setItem('auth',JSON.stringify(result));
+             console.log("login ", result);
               formJsonResetter(SigninFormJson); 
               this.setState({
                 isLoading: false,
                 isLoggedIn: true
               });
-              this.props.loggedInHangler();
+              this.props.loggedInHangler(result);
           }
           else if(result.Error)
           {
@@ -348,7 +338,7 @@ class Login extends React.Component {
         // Note: it's important to handle errors here
         // exceptions from actual bugs in components.
         (error) => {
-          console.log('error',error);
+          //console.log('error',error);
           this.setState({isLoading:false});
         })
         */ 
@@ -384,18 +374,17 @@ class Login extends React.Component {
   };
 
   handleSigninFormState = (updatedFormState,index) =>{
-  // console.log('signin',updatedFormState,index);
+  // //console.log('signin',updatedFormState,index);
   };
   handleSignupFormState = (updatedFormState,index) =>{
-  // console.log('signup',updatedFormState,index);
+  // //console.log('signup',updatedFormState,index);
   };
   handleOtpFormState = (updatedFormState,index) =>{
-  // console.log('otp',updatedFormState,index);
+  // //console.log('otp',updatedFormState,index);
   };
 
 render(){
   const {classes} = this.props;
-
    //Loader 
    let Loader = this.state.isLoading ? (
     <CircularProgress size={56} thickness={2.6} className={classes.fabProgress} />
@@ -430,18 +419,8 @@ render(){
         />
   ));
 
-  let Login;
-
-  if(this.state.isLoggedIn) {
-        Login = <Redirect to={{
-          pathname: '/integration',
-          auth: true
-      }} />
-    }
-    else
-    {
-      Login = (
-        <Grid container component="main" className={classes.root}>
+    return (  
+          <Grid container component="main" className={classes.root}>
           <CssBaseline />
           <Grid item xs={false} sm={7} md={8} className={classes.image} />
           <Grid item xs={12} sm={5} md={4} component={Paper} elevation={1} square>
@@ -450,25 +429,25 @@ render(){
               <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
               </Avatar>
-               {Loader}
+              {Loader}
               </div>
               
-             <SignIN isVisible={this.state.signInState}
+            <SignIN isVisible={this.state.signInState}
               signinClick={this.handleSigninSubmit}
               disable={this.state.isLoading}
               createClick={this.handleCreateNewClick}
               subtitle={this.state.registeredSubtitle}
               form={SignInForm} />
 
-             <SignUP isVisible={this.state.signUpState}
+            <SignUP isVisible={this.state.signUpState}
               signupClick={this.handleSignupSubmit}
               alreadyClick={this.handleAlreadyClick}
               disable={this.state.isLoading}
               form={SignUpForm} />
-             <OTP isVisible={this.state.otpState} 
-             submitClick={this.handleUserVerify} 
-             disable={this.state.isLoading}
-             form={OtpForm} />
+            <OTP isVisible={this.state.otpState} 
+            submitClick={this.handleUserVerify} 
+            disable={this.state.isLoading}
+            form={OtpForm} />
                 <Box mt={5}>
                   <Typography variant="body2" color="textSecondary" align="center">
                   Copyright &copy; 2019 C-Zentrix Social Platform
@@ -484,11 +463,9 @@ render(){
           propVertical="bottom"
           variant={this.state.SnackVariant}
           propHorizontal="right"
-           />
+          />
         </Grid>
-      );
-    }
-  return Login;
+        );
 }
  
 }

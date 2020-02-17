@@ -1,10 +1,10 @@
 import React from "react";
 
 //Material UI
-import {makeStyles, clsx, LinearProgress, Divider, Icon, Button, CardActions,  Grid, Typography, CardContent, Card, CardHeader, IconButton} from "../theme/muiComponents";
+import {makeStyles, Icon, clsx, LinearProgress, Button, CardActions,  Grid, Typography, CardContent, Card, CardHeader, IconButton} from "../theme/muiComponents";
 
 //Icons Material UI
-import {MoreVertIcon, DeleteIcon, SettingIcon} from "../theme/muiIcons";
+import {MoreVertIcon, DeleteIcon, VisibilityIcon} from "../theme/muiIcons";
 
 //CSS Styles
 const styles = makeStyles(theme => ({
@@ -82,16 +82,16 @@ const SocialCard = (props) => {
                         <MoreVertIcon />
                       </IconButton>
                     }
-                    subheader={<Typography style={{color: props.titleColor}}> {props.title}</Typography>}
+                    subheader={<Typography style={{color: 'grey'}}> {props.title}</Typography>}
                 />
                 <CardContent className={classes.cardContent}>
-                <img src={props.icon} alt="Not Found" className={classes.svgIcon} />
+                <Icon style={{ fontSize: 50, color : props.titleColor }} component={props.icon} />
                 </CardContent>
                 <CardActions className={classes.action}>
                 { expanded && props.disableBtn ?
                 <React.Fragment>
-                <IconButton aria-label="delete" disabled={props.Loader} className={classes.icnBtn}>
-                <SettingIcon fontSize="inherit"  />
+                <IconButton aria-label="delete" disabled={props.Loader} onClick={props.editHandler} className={classes.icnBtn}>
+                <VisibilityIcon  fontSize="inherit"  />
                 </IconButton>
                 <IconButton aria-label="delete" disabled={props.Loader} color="secondary" onClick={props.uninstallHandler} className={classes.icnBtn}>
                 <DeleteIcon fontSize="inherit" />

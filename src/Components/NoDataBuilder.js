@@ -11,10 +11,10 @@ RequiredProps :
 */
 import React from 'react';
 //Material UI
-import {makeStyles, Typography, Grid} from "../theme/muiComponents";
+import {makeStyles, clsx, Typography, Grid} from "../theme/muiComponents";
 //Icons Material UI
-import {InfoIcon,SearchIcon} from "../theme/muiIcons";
-
+import {InfoIcon,SearchIcon, ForumIcon} from "../theme/muiIcons";
+import Icon from '@material-ui/core/Icon';
 
 
 const styles = makeStyles(theme => ({
@@ -22,18 +22,40 @@ const styles = makeStyles(theme => ({
         color : "#00bcd4"
       },
       content:{
-        textAlign: "center"
+        textAlign: "center",
+        marginTop: "50px"
+      },
+      marginUP: {
+        marginTop: "150px"
       }
 }));
 
 const NoDataBuilder = (props) => {
   const classes = styles();
+  const iconList = (type) =>{
+    switch (type){
+      case "chat":
+        return ForumIcon;
+      case "search":
+        return SearchIcon;
+      case "chatinfo":
+        return InfoIcon;
+      case "info":
+        return InfoIcon;
+      default : 
+        return InfoIcon;
+    }
+  }
   //Getting props
-  const icon = (props.type === "search") ? <SearchIcon className={classes.InfoIcon} fontSize="large" /> : <InfoIcon className={classes.InfoIcon} fontSize="large" />;
+  const icon = <Icon component={iconList(props.type)} className={classes.InfoIcon} fontSize="large" />;
   let render = null;
   if(props.isRendor)
   {
-     render = (<span className={classes.content} >
+     render = (<div
+      className={clsx(classes.content, {
+        [classes.marginUP]: (props.type === "chat" || props.type === "chatinfo" ),
+      })} 
+       >
           <Grid item xs={12}>
             {icon}
           </Grid>
@@ -47,7 +69,7 @@ const NoDataBuilder = (props) => {
               {props.description}
             </Typography>
           </Grid>
-      </span>);
+      </div>);
   }
  
   return (

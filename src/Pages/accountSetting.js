@@ -10,7 +10,7 @@ import {SettingIcon, EmailIcon, InfoIcon} from "../theme/muiIcons";
 import FormRender from '../Components/FormRender';
 import AppBarBuilder from '../Components/AppBarBuilder';
 import SnippetCard from '../Components/SnippetCardBuilder';
-
+import DialogBuilder from '../Components/DialogBuilder';
 //import Json Schema
 import formJson from '../FormSchema/emailSetting.json';
 
@@ -72,6 +72,9 @@ class AccountSetting extends React.Component {
             EDIT_SELECTED: null,
             IS_LOADING:false,
             DATA_ARRAY:[],
+            dialogOpen : false,
+            dialogTitle : "",
+            dialogContent: "",
             DATA_COUNT: "",
             NO_DATA_CONTENT: Intial_NODATA,
             dataForm: formJson,
@@ -86,12 +89,14 @@ componentDidMount()
 
 //<==== HANDLERS ====>
 handleFormState = (updatedFormState,index) =>{
-	console.log(`onChange ${System_Constants.MODULE_NAME} form =>`,this.state.dataForm);
+	//console.log(`onChange ${System_Constants.MODULE_NAME} form =>`,this.state.dataForm);
 }
 handleUpdateClick = (event) => {
-    console.log('update');
+    //console.log('update');
 }
-
+handleDeleteAccount = () =>{
+  this.setState({dialogOpen : true, dialogTitle: "Account", dialogContent: "WARNING : This feature is temporarily blocked. Please try again after some time."});
+}
 render(){
   const { classes } = this.props;
   const email_form = (
@@ -122,7 +127,7 @@ render(){
             <Typography variant="body2">Are you sure you want to delete account sh88688@gmail.com? This will destroy the account with all corresponding data and cannot be undone!</Typography>
         </Grid>
         <Grid item xs={4}>
-            <Button variant="outlined" className={classes.delBtn}>
+            <Button variant="outlined" onClick={this.handleDeleteAccount} className={classes.delBtn}>
             Delete this account
             </Button>
         </Grid>
@@ -135,10 +140,12 @@ render(){
     <AppBarBuilder 
       IS_LOADING={this.state.IS_LOADING}
       headerTitle={System_Constants.MODULE_NAME}
+      PARENT={this.props.PARENT}
       headerIcon={SettingIcon} />
     
     <main className={classes.content}>
       <div className={classes.toolbar} />
+      <DialogBuilder isopen={this.state.dialogOpen} dialogTitle={this.state.dialogTitle} dialogContent={this.state.dialogContent} ok={() => this.setState({dialogOpen : false})} />
       <Grid 
             container 
             direction="row"

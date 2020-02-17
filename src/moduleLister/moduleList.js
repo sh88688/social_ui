@@ -1,6 +1,6 @@
 //Icons Material UI
-import {ShopIcon, SettingIcon,ProfileIcon, SupportIcon,AccountIcon,LogoutIcon,PeopleIcon} from "../theme/muiIcons";
-
+import {ShopIcon,FacebookIcon, ConfirmationNumberIcon, DescriptionIcon, SettingIcon,ProfileIcon, SupportIcon,AccountIcon,LogoutIcon,PeopleIcon} from "../theme/muiIcons";
+import { ROUTE_FOLDER } from '../Configs/apiConf';
 
 const _SINGLE_ = "single";
 const _CONTAINED_ = "contained";
@@ -10,21 +10,42 @@ const Modules = [
     type: _SINGLE_,
     name: "Google Play",
     icon: ShopIcon,
-    path: "/googleReviews",
+    path: `${ROUTE_FOLDER}/google_play`,
+    isAddIcon: false
+},
+{
+    type: _SINGLE_,
+    name: "Facebook",
+    icon: FacebookIcon,
+    path: `${ROUTE_FOLDER}/facebook`,
     isAddIcon: false
 },
 {
     type: _SINGLE_,
     name: "Integration",
     icon: SettingIcon,
-    path: "/integration",
+    path: `${ROUTE_FOLDER}/integration`,
     isAddIcon: false
 },
 {
     type: _SINGLE_,
-    name: "Users",
+    name: "Agents",
     icon: PeopleIcon,
-    path: "/users",
+    path: `${ROUTE_FOLDER}/agents`,
+    isAddIcon: false
+},
+{
+    type: _SINGLE_,
+    name: "Ticket Details",
+    icon: ConfirmationNumberIcon,
+    path: `${ROUTE_FOLDER}/tickets`,
+    isAddIcon: false
+},
+{
+    type: _SINGLE_,
+    name: "Templates",
+    icon: DescriptionIcon,
+    path: `${ROUTE_FOLDER}/templates`,
     isAddIcon: false
 },
 {
@@ -34,7 +55,7 @@ const Modules = [
     type: _SINGLE_,
     name: "Support",
     icon: SupportIcon,
-    path: "/support",
+    path: `${ROUTE_FOLDER}/support`,
     isAddIcon: false
 },
 {
@@ -45,12 +66,12 @@ const Modules = [
     subModule: [{
             name: "Profile",
             icon: ProfileIcon,
-            path: "/profile",
+            path: `${ROUTE_FOLDER}/profile`,
         },
         {
             name: "Account Setting",
             icon: SettingIcon,
-            path: "/accountSetting",
+            path: `${ROUTE_FOLDER}/accountSetting`,
         }
     ]
 },
@@ -58,7 +79,8 @@ const Modules = [
     type: _SINGLE_,
     name: "Logout",
     icon: LogoutIcon,
-    path: "/logout",
+    onClickSet: true,
+    path: `${ROUTE_FOLDER}/logout`,
     isAddIcon: true
 },
 ];

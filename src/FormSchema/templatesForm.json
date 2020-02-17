@@ -1,0 +1,73 @@
+[
+    {
+      "id": "tag",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"Template Title",
+        "placeholder": "Enter Title",
+        "helperText": "",
+        "value": "",
+        "autoFocus":true,
+        "validation": {
+          "required": {"value": true,"msg":"Template title is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+        "id": "module",
+        "config": {
+          "elementType": "native-select",
+          "grid": 6,
+          "options": [
+          {
+          "value": "all",
+          "displayValue": "All"
+          },
+          {
+            "value": "twitter",
+            "displayValue": "Twitter"
+          },
+          {
+          "value": "facebook",
+          "displayValue": "Facebook"
+          },
+          {
+            "value": "instagram",
+            "displayValue": "Instagram"
+          },
+          {
+            "value": "google_play",
+            "displayValue": "Google Play"
+            }
+          ],
+          "label": "Module",
+          "placeholder": "Select Module",
+          "helperText": "",
+          "value": "",
+          "validation": {
+            "required": {"value": true,"msg":"Module is required."}
+          },
+          "valid": true
+        }
+      },
+      {
+      "id": "body",
+      "config": {
+        "elementType": "textarea",
+        "grid": 8,
+        "rows": 3,
+        "rowsMax" : 4,
+        "type":"text",
+        "label":"Content",
+        "placeholder": "Write template content...",
+        "helperText": "",
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"Template content is required."}
+        },
+        "valid": true
+      }
+    }
+  ]

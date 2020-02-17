@@ -1,2 +1,2 @@
 export const drawerWidthRight = 300;
-export const drawerWidthLeft = 240;
+export const drawerWidthLeft = 230;

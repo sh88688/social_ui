@@ -1,0 +1,18 @@
+[
+    {
+      "id": "user_name",
+      "config": {
+          "elementType": "input",
+          "grid": 7,
+          "label": "Title",
+          "placeholder": "Enter Title",
+          "autoFocus": true,
+          "helperText": "",
+          "value": "",
+          "validation": {
+          "required": {"value": true, "msg": "Required field"}
+          },
+          "valid": true
+      }
+    }
+  ]

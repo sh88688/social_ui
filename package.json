@@ -1,27 +1,30 @@
 {
   "title": "Material CZ SOCIAL",
   "devDependencies": {
-    "react-scripts": "latest"
+    "react-scripts": "^3.3.0"
   },
   "description": "CZ SOCIAL UI",
-  "homepage": "http://172.16.3.46/CZ_SOCIAL/",
+  "homepage": "https://localhost/CZ_SOCIAL/",
   "dependencies": {
-    "@material-ui/core": "latest",
+    "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "latest",
     "@material-ui/lab": "latest",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
     "base-64": "^0.1.0",
+    "emoji-picker-react": "^3.1.2",
+    "multi-select-react": "latest",
     "notistack": "^0.8.9",
     "public-ip": "^3.1.0",
-    "multi-select-react": "latest",
-    "react-router-dom": "latest"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-emojione": "^5.0.1",
+    "react-router-dom": "latest",
+    "react-scroll": "latest"
   },
   "keywords": [],
   "name": "chatbot-ui",
   "version": "0.0.0",
   "scripts": {
-    "start": "PORT=3002 react-scripts start",
+    "start": "PORT=3102 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

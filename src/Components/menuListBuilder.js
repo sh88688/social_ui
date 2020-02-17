@@ -29,6 +29,9 @@ const styles = makeStyles(theme => ({
       buttonIcon:{
         paddingRight:"5px",
       },  
+      marginText:{
+        marginLeft : "10px"
+      },
       listItemBase:{
         "&:focus": {
           backgroundColor: "#018ece1a",
@@ -62,7 +65,7 @@ const styles = makeStyles(theme => ({
         color:"inherit"
       },
       nested: {
-        paddingLeft: theme.spacing(4)
+        paddingLeft: theme.spacing(2.2)
       },  
 }));
 
@@ -75,22 +78,41 @@ const MenuListBuilder = (props) =>{
       switch(props.type) {
        case "single":
           if(props.status[props.path])
-          {
-              menuItem = (
-                  <NavLink key={props.name} className={classes.navlink} to={props.path}>
-                <ListItem onClick={() => props.onActive(props.path)} className={clsx(
-                  {[classes.listItemActive]: (props.selected === props.path)}
-                  )} button key={props.name}>
-                  <ListItemIcon>
-                  <Icon component={props.icon} />
-                  </ListItemIcon>
-                  <ListItemText primary={props.name} />
-                  {props.isAddIcon && <ListItemIcon className={classes.listIconStyle}>
-                  <AddIcon />
-                  </ListItemIcon>}
-                </ListItem>
-              </NavLink>
-              );
+          { 
+            if(props.clickHandler !== null)
+            {
+                    menuItem = (
+                    <ListItem onClick={() => props.clickHandler()} className={clsx(
+                      {[classes.listItemActive]: (props.selected === props.path)}
+                      )} button key={props.name}>
+                      <ListItemIcon>
+                      <Icon component={props.icon} />
+                      </ListItemIcon>
+                      <ListItemText className={classes.marginText} primary={props.name} />
+                      {props.isAddIcon && <ListItemIcon className={classes.listIconStyle}>
+                      <AddIcon />
+                      </ListItemIcon>}
+                    </ListItem>
+                  );
+            }
+            else {
+                  menuItem = (
+                    <NavLink key={props.name} className={classes.navlink} to={props.path}>
+                  <ListItem onClick={() => props.onActive(props.path)} className={clsx(
+                    {[classes.listItemActive]: (props.selected === props.path)}
+                    )} button key={props.name}>
+                    <ListItemIcon>
+                    <Icon component={props.icon} />
+                    </ListItemIcon>
+                    <ListItemText className={classes.marginText} primary={props.name} />
+                    {props.isAddIcon && <ListItemIcon className={classes.listIconStyle}>
+                    <AddIcon />
+                    </ListItemIcon>}
+                  </ListItem>
+                </NavLink>
+                );
+            }
+
           }
        break;
        case "contained":
@@ -99,9 +121,9 @@ const MenuListBuilder = (props) =>{
                   <React.Fragment>
                   <ListItem onClick={props.Expand} button key="Aount">
                   <ListItemIcon>
-                  <Icon component={props.icon} />
+                  {(!props.MiniDrawer && props.open) ? <ExpandLess /> : <Icon component={props.icon} />}
                   </ListItemIcon>
-                  <ListItemText primary={props.name} />
+                  <ListItemText className={classes.marginText} primary={props.name} />
                   <ListItemIcon className={classes.listIconStyle} >
                   {props.open ? <ExpandLess /> : <ExpandMore />}
                   </ListItemIcon>
@@ -118,7 +140,7 @@ const MenuListBuilder = (props) =>{
                             <ListItemIcon>
                             <Icon component={module.icon} />
                             </ListItemIcon>
-                            <ListItemText primary={module.name} />
+                            <ListItemText className={classes.marginText} primary={module.name} />
                             </ListItem></NavLink>;
                         }
                         return subModule;

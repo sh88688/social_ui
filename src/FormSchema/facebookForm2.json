@@ -1,0 +1,18 @@
+[
+    {
+    "id": "pageId",
+    "config": {
+      "elementType": "native-select",
+      "grid": 6,
+      "options": [],
+      "label": "Facebook Page",
+      "helperText": "",
+      "placeholder": "-- Select Your Page --",
+      "value": "",
+      "validation": {
+        "required": {"value": true,"msg":"This field is required."}
+      },
+      "valid": true
+    }
+  }
+]

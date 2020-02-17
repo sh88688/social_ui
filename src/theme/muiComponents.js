@@ -9,6 +9,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from '@material-ui/core/CardHeader';
 import Checkbox from "@material-ui/core/Checkbox";
+import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Collapse from "@material-ui/core/Collapse";
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -38,6 +39,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import MenuItem from "@material-ui/core/MenuItem";
 import Paper from '@material-ui/core/Paper';
 import Popover from '@material-ui/core/Popover';
@@ -46,12 +48,13 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Select from '@material-ui/core/Select';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
+import Slide from '@material-ui/core/Slide';
 import TextField from "@material-ui/core/TextField";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import {drawerWidthRight,drawerWidthLeft } from './drawerConfig';
-import {withStyles, makeStyles } from "@material-ui/core/styles";
+import {withStyles, makeStyles, fade } from "@material-ui/core/styles";
 
 export {
     AppBar,
@@ -64,6 +67,7 @@ export {
     CardContent,
     CardHeader,
     Checkbox,
+    Chip,
     CircularProgress,
     Collapse,
     CssBaseline,
@@ -75,6 +79,7 @@ export {
     DialogTitle,
     Divider,
     Drawer,
+    fade,
     FormControl,
     FormControlLabel,
     FormHelperText,
@@ -93,6 +98,7 @@ export {
     ListItemIcon,
     ListItemText,
     ListSubheader,
+    ListItemSecondaryAction,
     MenuItem,
     Paper,
     Popover,
@@ -101,6 +107,7 @@ export {
     Select,
     Snackbar,
     SnackbarContent,
+    Slide,
     TextField,
     Toolbar,
     Tooltip,

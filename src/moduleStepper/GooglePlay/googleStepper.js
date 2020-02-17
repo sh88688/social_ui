@@ -21,7 +21,7 @@ import formJson2 from '../../FormSchema/googlePlayForm2.json';
 
 //Material UI
 import {makeStyles, withStyles, Button} from "../../theme/muiComponents";
-
+import {SERVER_IP, PROTOCOL, ROUTE_FOLDER} from '../../Configs/apiConf';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -128,23 +128,22 @@ class GooglePlayStepper extends React.Component {
   DEFAULT_JSON2 = JSON.stringify(formJson2);
     constructor(props){
         super(props);
-        console.log('GOOGLE STeeper ==> ',this.props);
         this.state = {
             activeStep : 0,
+            Uploading: false,
             firstForm: formJson1,
             secondForm: formJson2
         }
     }
 
     componentWillUnmount(){
-      console.log("===STEPPER== WUM ",this.state.firstForm[0].config);
+      //console.log("===STEPPER== WUM ",this.state.firstForm[0].config);
       this.setState({firstForm : JSON.parse(this.DEFAULT_JSON1)});
     }
     componentWillReceiveProps(nextProps) {
-      if(this.props.info !== nextProps.info)
-      {
-        console.log("===== [googleStepper.js] componentWillReceiveProps =====",nextProps.info);
-        if(nextProps.info.statusCode === "2001")
+      if(this.props.info !== nextProps.info){
+        //console.log("===== [googleStepper.js] componentWillReceiveProps =====",nextProps.info);
+        if(nextProps.info.statusCode === "2001" && nextProps.info.moduleInfo.subModule === 'google_play')
         {
           this.setState((prevState, props) => {
             return {activeStep: prevState.activeStep + 1, secondForm : JSON.parse(this.DEFAULT_JSON2)};
@@ -159,7 +158,7 @@ getStepContent = (step) => {
     case 0:
       return <FirstForm handler={this.handleFormState} Form={this.state.firstForm} />;
     case 1:
-      return <SecondForm handler={this.handleFormState} Form={this.state.secondForm} />;
+      return <SecondForm loading={this.state.Uploading} handler={this.handleFormState} Form={this.state.secondForm} />;
     case 2:
       return <Typography >Your Google Play Account is Successfully Integrated.</Typography>;
     default:
@@ -168,7 +167,7 @@ getStepContent = (step) => {
 }
 
 handleFormState = (updatedFormState,index) =>{
-	console.log(`onChangeform`);
+	//console.log(`onChangeform`);
 }
 handlePostData = () => {
   
@@ -178,9 +177,10 @@ handlePostData = () => {
   Data.client_id="1";
   Data.event_by="Admin";
   Data.moduleInfo = {};
-  Data.moduleInfo.module = "/integration";
+  Data.moduleInfo.module = `${ROUTE_FOLDER}/integration`;
   Data.moduleInfo.subModule = "google_play";
-  Data.moduleInfo.action="create";
+  Data.moduleInfo.action="1";
+  Data.moduleInfo.moduleRoute={name: `${ROUTE_FOLDER}/google_play`, value: true};
   Data.data = {};
   Data.data.app_name = this.state.firstForm[0].config.value;
   Data.data.package_name = this.state.firstForm[1].config.value;
@@ -190,8 +190,6 @@ handlePostData = () => {
   multipartObj.field_name = "playstore_file";
   multipartObj.file_prefix = "playStoreCredentials_";
   Data.data.multipart.push(multipartObj);
-  
-  console.log(Data);
   const queryParam = JSON.stringify(Data);
   const postData = new FormData();
         postData.append('playstore_file',this.state.secondForm[0].config.file);
@@ -200,18 +198,17 @@ handlePostData = () => {
     method: 'POST',
     body: postData
   };
-  const url = new URL(`http://172.16.3.46/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
+  const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
   fetchCall(url,fetchCallOptions,"text").then((result) => {
-        console.log(result);
+        //console.log(result);
         this.props.tokenCallback(result);
     },
     (error) => {
-      console.log(error);
+      //console.log(error);
     });
 
 }
- handleNext = () => {
- 
+handleNext = () => {
       const formIndex = ['firstForm','secondForm'];
       let Form = formIndex[this.state.activeStep];
       let didFormValid = isFormValid(this.state[Form]);
@@ -229,64 +226,65 @@ handlePostData = () => {
       {
         if (didFormValid.formValidity) { 
         this.handlePostData();
+        this.setState({Uploading : true});
         }
       }
+  }
+handleBack = () => {
+
+  if(this.state.activeStep === 2)
+  {
+    this.setState((prevState, props) => {
+      return {activeStep: prevState.activeStep - 1, secondForm : JSON.parse(this.DEFAULT_JSON2)};
+    });
+  }
+  else
+  {
+    this.setState((prevState, props) => {
+      return {activeStep: prevState.activeStep - 1};
+    });
+  }
+
   };
- handleBack = () => {
 
-    if(this.state.activeStep === 2)
-    {
-      this.setState((prevState, props) => {
-        return {activeStep: prevState.activeStep - 1, secondForm : JSON.parse(this.DEFAULT_JSON2)};
-      });
-    }
-    else
-    {
-      this.setState((prevState, props) => {
-        return {activeStep: prevState.activeStep - 1};
-      });
-    }
+handleReset = () => {
+    this.setState({activeStep: 0});
+  }
 
-    };
+render(){
+    const {classes} = this.props;
+    const steps = getSteps();
 
- handleReset = () => {
-     this.setState({activeStep: 0});
-    };
-
-    render(){
-        const {classes} = this.props;
-        const steps = getSteps();
-
-        return (
-          <Paper className={classes.root}>
-              <Stepper className={classes.stepRoot} alternativeLabel activeStep={this.state.activeStep} connector={<ColorlibConnector />}>
-                {steps.map(label => (
-                  <Step key={label}>
-                    <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-            <div key="stepcontent">
-                  <React.Fragment>
-                  <div className={classes.instructions}>
-                    {this.getStepContent(this.state.activeStep)}
-                  </div>
-                  <Button disabled={this.state.activeStep === 0} onClick={this.handleBack} className={classes.button}>
-                    Back
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={this.state.activeStep === steps.length - 1 ? this.props.handler : this.handleNext}
-                    className={classes.button}
-                  >
-                    {this.state.activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                  </React.Fragment>
-            </div>
-          </Paper>
-          );
-    }
+    return (
+      <Paper className={classes.root}>
+          <Stepper className={classes.stepRoot} alternativeLabel activeStep={this.state.activeStep} connector={<ColorlibConnector />}>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        <div key="stepcontent">
+              <React.Fragment>
+              <div className={classes.instructions}>
+                {this.getStepContent(this.state.activeStep)}
+              </div>
+              <Button onClick={this.state.activeStep === 0 ? this.props.handler : this.handleBack}  variant="outlined" className={classes.button}>
+              {this.state.activeStep === 0 ? 'Cancel' : 'Back'}
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={this.state.activeStep === steps.length - 1 ? this.props.handler : this.handleNext}
+                className={classes.button}
+              >
+                {this.state.activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              </Button>
+              </React.Fragment>
+        </div>
+      </Paper>
+      );
+}
 }
 
 export default withStyles(styles)(GooglePlayStepper);

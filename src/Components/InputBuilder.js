@@ -97,7 +97,7 @@ const InputBuilder = props => {
             color="secondary"
             margin="dense"
             required={other.validation.required.value}
-            {...other}
+            {...other}  
             error={valid === false && touched !== 0}
             onChange={changed}
             value={other.value}
@@ -106,7 +106,8 @@ const InputBuilder = props => {
             }}
             InputProps={{
               startAdornment: startAdornment,
-              endAdornment: endAdornment
+              endAdornment: endAdornment,
+              readOnly: other.readOnly,
             }}
           />
         </Grid>
@@ -119,6 +120,7 @@ const InputBuilder = props => {
             fullWidth
             multiline={true}
             margin="dense"
+            color="secondary"
             required={other.validation.required.value}
             error={valid === false && touched !== 0}
             onChange={changed}
@@ -141,6 +143,7 @@ const InputBuilder = props => {
           <TextField
             select
             fullWidth
+            color="secondary"
             required={other.validation.required.value}
             error={valid === false && touched !== 0}
             onChange={changed}
@@ -179,6 +182,7 @@ const InputBuilder = props => {
           <TextField
             select
             fullWidth
+            color="secondary"
             required={other.validation.required.value}
             error={valid === false && touched !== 0}
             value={other.value}

@@ -21,7 +21,6 @@ import formJson from '../FormSchema/profileForm.json';
 //import Search Json Schema
 import formSearchJson from '../SearchSchema/googlePlaySearch.json';
 
-
 //CSS Styles
 const styles = theme => ({
       rootDiv: {
@@ -64,7 +63,7 @@ class GoogleReview extends React.Component {
             EDIT_FLAG: false,
             EDIT_SELECTED: null,
             IS_LOADING:false,
-            DATA_ARRAY:[],
+            DATA_ARRAY:["test","best"],
             DATA_COUNT: "",
             NO_DATA_CONTENT: Intial_NODATA,
             dataForm: formJson,
@@ -72,13 +71,13 @@ class GoogleReview extends React.Component {
           };      
   }
 
-componentDidMount()
-{
-  console.log("====> DID MOUNT GR");
+componentDidMount(){
+
+  //console.log("====> DID MOUNT GR");
   // let filter = {};
   // GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Intial_NODATA, this);
 
-  // GET_RESPONSE("intentLabel", 0, 10).then((result)=>{
+  // GET_RESPONSE("intentLabel", 0, 10, this).then((result)=>{
 
   //   const keyChain = {
   //     fieldKey: "intent_label_id",
@@ -91,23 +90,52 @@ componentDidMount()
   // });
 }
 
-componentWillReceiveProps(nextProps)
-{
-  console.table("===== [Intent.js] componentWillReceiveProps =====",nextProps.info);
+UNSAFE_componentWillReceiveProps(nextProps){
+  //console.table("===== [Intent.js] componentWillReceiveProps =====",nextProps.info);
   if(this.props.info !== nextProps.info)
   {
     SET_DATA(nextProps,"DATA_ARRAY",System_Constants.ID_FIELD,this); 
   }
 }
+// getReviews = (module) => {
+
+//   const reqObj = {};
+//   reqObj.filter = {};
+//   reqObj.limit_info = {};
+//   reqObj.limit_info.limit_start = 0;
+//   reqObj.limit_info.limit_end = 10;
+//   reqObj.filter.client_id = "560";
+//   reqObj.filter.param = "Google";
+//   reqObj.filter.reviewId = "";
+//   reqObj.filter.filter_source = "all_post";
+//   reqObj.filter.assigned_to_user_id = "";
+//   reqObj.filter.assigned_to_dept_id = "";
+//   reqObj.filter.create_time_s = "11/06/2019";
+//   reqObj.filter.create_time_e = "12/06/2019";
+//   reqObj.filter.status_id = "";
+//   reqObj.filter.name = "";
+
+//   const queryParam = `?module=${module}&cl_key=1&req_data=${JSON.stringify(reqObj)}`;
+//   const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/getDataAjax.php${queryParam}`);
+//   const fetchCallOptions = {
+//      method: "GET",
+//      credentials: 'include' 
+//    };
+//     try {
+//     const result = fetchCall(url, fetchCallOptions, "json");
+//     return result;
+//     }
+//     catch (error) {
+//       //console.log(error);
+//     }
+// }
 handleFormState = (updatedFormState,index) =>{
-// console.log("intent ====> ",this.state.dataForm);
+// //console.log("intent ====> ",this.state.dataForm);
 }
-
 handleSearch = (filter) => {
-  console.log(System_Constants.FIELD_NAME,filter, System_Constants.API_PAGE, 0, 10, Search_NODATA);
-GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Search_NODATA, this);
+  //console.log(System_Constants.FIELD_NAME,filter, System_Constants.API_PAGE, 0, 10, Search_NODATA);
+  GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Search_NODATA, this);
 }
-
 handleClear = () => {
   let filter = {};
   filter.agent_name = "";
@@ -120,15 +148,17 @@ render(){
   const colorDynamo = ["#E53935","#D81B60","#8E24AA","#1E88E5","#00ACC1","#00897B","#43A047","#FFB300","#F4511E"];
   //Intent cards
   const allData =  this.state.DATA_ARRAY.map((element,keyIndex) => (
+    <Grid key={keyIndex} item xs={12}>
     <ReviewCard 
     key={keyIndex}
     author={"Shivam"}
     starRating={3}
-    userComment={"Nice App."}
+    userComment={"Very useful and Nice App."}
     colorDynamo={colorDynamo[Math.floor(Math.random() * 10)]}
     lastModify={"1575371586"}
     developerComment= {"Thanks for your valuable feedback."}
     />
+    </Grid>
     ));
 
    
@@ -136,7 +166,8 @@ render(){
     <div className={classes.rootDiv}>
     <AppBarBuilder 
       IS_LOADING={this.state.IS_LOADING}
-      headerTitle={System_Constants.MODULE_NAME} 
+      headerTitle={System_Constants.MODULE_NAME}
+      PARENT={this.props.PARENT}
       headerIcon={RateReviewIcon} />
     
     <main className={classes.content}>
@@ -157,9 +188,7 @@ render(){
                   dataCount={this.state.DATA_COUNT}
                   placeholder={`Search ${System_Constants.MODULE_NAME}...`} />
 
-          <Grid item xs={12}>
             {allData}  
-          </Grid>
         {/* Start NoDataBuilder here*/}
         <NoDataBuilder
           isRendor={(this.state.DATA_ARRAY.length === 0 && this.state.ADD_FLAG === false)}

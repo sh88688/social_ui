@@ -1,15 +1,15 @@
 import React from 'react';
 import {makeStyles } from '@material-ui/core/styles';
 
-import Typography from "@material-ui/core/Typography";
-import Grid from '@material-ui/core/Grid';
-import Divider from "@material-ui/core/Divider";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+
+//Material UI
+import {Typography, Tooltip, Grid, Divider, Card, CardContent} from "../theme/muiComponents";
+
 
 const styles = makeStyles(theme => ({
     headerLeft:{
         textAlign:"left",
+        flexGrow: 1,
         color: theme.palette.secondary.main
     },
     root:{
@@ -39,10 +39,11 @@ const FormBlockBuilder = (props) => {
            alignItems="center"
            spacing={2}
            >
-           <Grid item xs>
+           <Grid style={{display: "flex"}} item xs>
              <Typography className={classes.headerLeft} variant="h6">
              {props.title}
              </Typography>
+             {props.headerMoreBtn && <Tooltip title="{{ Variables }}" >{props.headerMoreBtn}</Tooltip>}
            </Grid>
            </Grid>
         <Divider className={classes.dividerMargin} />

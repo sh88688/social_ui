@@ -20,11 +20,11 @@
       "config": {
         "elementType": "input",
         "grid": 6,
+        "type":"password",
         "label":"Password",
         "placeholder": "Enter Password",
         "helperText": "",
         "value": "",
-        "autoFocus":true,
         "validation": {
           "required": {"value": true,"msg":"This field is required."}
         },
@@ -32,7 +32,37 @@
       }
     },
     {
-      "id": "user_email",
+      "id": "first_name",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"First Name",
+        "placeholder": "Enter First Name",
+        "helperText": "",
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "last_name",
+      "config": {
+        "elementType": "input",
+        "grid": 6,
+        "label":"Last Name",
+        "placeholder": "Enter Last Name",
+        "helperText": "",
+        "value": "",
+        "validation": {
+          "required": {"value": true,"msg":"This field is required."}
+        },
+        "valid": true
+      }
+    },
+    {
+      "id": "email",
       "config": {
         "elementType": "input",
         "grid": 6,
@@ -40,9 +70,9 @@
         "placeholder": "Enter User Email",
         "helperText": "",
         "value": "",
-        "autoFocus":true,
         "validation": {
-          "required": {"value": true,"msg":"This field is required."}
+          "required": {"value": true,"msg":"This field is required."},
+          "isEmail": {"value": true,"msg":"Please enter a valid e-mail."}
         },
         "valid": true
       }
@@ -56,9 +86,11 @@
         "placeholder": "Enter Mobile No",
         "helperText": "",
         "value": "",
-        "autoFocus":true,
         "validation": {
-          "required": {"value": true,"msg":"This field is required."}
+          "required": {"value": true,"msg":"This field is required."},
+          "maxLength": {"value": 10,"msg":"Please enter no more 10 characters."},
+          "minLength": {"value": 10,"msg":"Please enter 10 atleast characters."},
+          "isDigit": {"value": true,"msg":"Please enter only digits."}
         },
         "valid": true
       }
@@ -66,26 +98,26 @@
     {
       "id": "department",
       "config": {
-        "elementType": "multi-select",
+        "elementType": "native-select",
         "grid": 6,
         "options": [
         {
-        "value": "Development",
+        "value": "1",
         "displayValue": "Development"
         },
         {
-        "value": "Sales",
+        "value": "2",
         "displayValue": "Sales"
         },
         {
-          "value": "Support",
+          "value": "3",
           "displayValue": "Support"
           }
         ],
         "label": "Department",
-        "placeholder": "Select Repartment",
+        "placeholder": "Select Department",
         "helperText": "",
-        "value": [],
+        "value": "",
         "validation": {
           "required": {"value": true,"msg":"This field is required."}
         },
@@ -95,26 +127,26 @@
      {
       "id": "role",
       "config": {
-        "elementType": "multi-select",
+        "elementType": "native-select",
         "grid": 6,
         "options": [
         {
-        "value": "Admin",
+        "value": "1",
         "displayValue": "Admin"
         },
         {
-        "value": "Agent",
+        "value": "2",
         "displayValue": "Agent"
         },
         {
-          "value": "Team Lead",
+          "value": "3",
           "displayValue": "Team Lead"
           }
         ],
         "label": "Role",
         "placeholder": "Select Role",
         "helperText": "",
-        "value": [],
+        "value": "",
         "validation": {
           "required": {"value": true,"msg":"This field is required."}
         },

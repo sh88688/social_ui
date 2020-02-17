@@ -5,24 +5,22 @@ import PropTypes from "prop-types";
 import {withStyles,Grid} from "../theme/muiComponents";
 
 //Icons Material UI
-import {RateReviewIcon} from "../theme/muiIcons";
+import {PeopleIcon} from "../theme/muiIcons";
 
 
 //Components
-import ReviewCard from '../Components/ReviewCardBuilder';
+import UserCardBuilder from '../Components/UserCardBuilder';
 import SortSearchBuilder from '../Components/SortSearchBuilder';
 import AppBarBuilder from '../Components/AppBarBuilder';
 import NoDataBuilder from '../Components/NoDataBuilder';
-
 import FormRender from '../Components/FormRender';
-
 import HeaderButtonBuilder from '../Components/HeaderButtonBuilder';
 import FormBlockBuilder from '../Components/FormBlockBuilder';
 
 
 //Modular Functions
 //import {GET_DATA, SET_DATA} from '../ModularFunctions/Functions';
-import {GET_DATA, SET_DATA, FILL_VALUES, HEADER_TOGGLE, ACTION_HANDLER} from '../ModularFunctions/Functions';
+import {GET_DATA, SET_DATA, FILL_VALUES, HEADER_TOGGLE,  ACTION_HANDLER} from '../ModularFunctions/Functions';
 
 //import Json Schema
 import formJson from '../FormSchema/usersForm.json';
@@ -58,14 +56,13 @@ System_Constants.API_PAGE="users";
 System_Constants.MODULE_PAGE="/users";
 System_Constants.ID_FIELD="user_id";
 System_Constants.FIELD_NAME='user_name'
-System_Constants.MODULE_NAME="Users";
+System_Constants.MODULE_NAME="Agents";
 
 class Users extends React.Component {
 
   DEFAULT_JSON = JSON.stringify(formJson);
   
-  constructor(props)
-  {
+  constructor(props){
           super(props);
           this.state = {
             ADD_FLAG:false,
@@ -80,42 +77,35 @@ class Users extends React.Component {
           };      
   }
 
-componentDidMount()
-{
-  console.log("====> DID MOUNT GR");
-  // let filter = {};
-  // GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Intial_NODATA, this);
+componentDidMount(){
+  let filter = {};
+   GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Intial_NODATA, this);
+   
+  //  GET_RESPONSE("users", 0, 10, this).then((result)=>{
 
-  // GET_RESPONSE("intentLabel", 0, 10).then((result)=>{
-
-  //   const keyChain = {
-  //     fieldKey: "intent_label_id",
-  //     displayApiKey:"intent_label",
-  //     valueApiKey:"intent_label_id"
-  //   };
-  //   SELECT_OPTION_SETTER(this, result, keyChain);
-  //   this.setState({dataForm : this.DEFAULT_JSON});
-  //   this.DEFAULT_JSON = JSON.stringify(this.DEFAULT_JSON);
-  // });
+  //    const keyChain = {
+  //      fieldKey: "user_id",
+  //      displayApiKey:"user_id",
+  //      valueApiKey:"user_id"
+  //    };
+  //    SELECT_OPTION_SETTER(this, result, keyChain);
+  //    this.setState({dataForm : this.DEFAULT_JSON});
+  //    this.DEFAULT_JSON = JSON.stringify(this.DEFAULT_JSON);
+  //  });
+   
 }
-
-componentWillReceiveProps(nextProps)
-{
-  console.table("===== [Intent.js] componentWillReceiveProps =====",nextProps.info);
+UNSAFE_componentWillReceiveProps(nextProps){
   if(this.props.info !== nextProps.info)
   {
     SET_DATA(nextProps,"DATA_ARRAY",System_Constants.ID_FIELD,this); 
   }
 }
 handleFormState = (updatedFormState,index) =>{
-// console.log("intent ====> ",this.state.dataForm);
+  // //console.log("intent ====> ",this.state.dataForm);
 }
-
 handleSearch = (filter) => {
-  console.log(System_Constants.FIELD_NAME,filter, System_Constants.API_PAGE, 0, 10, Search_NODATA);
-GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Search_NODATA, this);
+ GET_DATA(filter, System_Constants.API_PAGE, 0, 10, Search_NODATA, this);
 }
-
 handleClear = () => {
   let filter = {};
   filter.agent_name = "";
@@ -125,18 +115,17 @@ handleClear = () => {
 
 render(){
   const { classes } = this.props;
-  const colorDynamo = ["#E53935","#D81B60","#8E24AA","#1E88E5","#00ACC1","#00897B","#43A047","#FFB300","#F4511E"];
-  //Intent cards
   const allData =  this.state.DATA_ARRAY.map((element,keyIndex) => (
-    <ReviewCard 
-    key={keyIndex}
-    author={"Shivam"}
-    starRating={3}
-    userComment={"Nice App."}
-    colorDynamo={colorDynamo[Math.floor(Math.random() * 10)]}
-    lastModify={"1575371586"}
-    developerComment= {"Thanks for your valuable feedback."}
-    />
+    <Grid key={keyIndex} item xs={4}>
+    <UserCardBuilder 
+    key={keyIndex}  
+    ICON={PeopleIcon}
+    info={this.props.info} 
+    processing={element.processing} 
+    data={element} 
+    onDelete={(event) => ACTION_HANDLER(event,System_Constants.API_PAGE,"delete",{id:System_Constants.ID_FIELD,index: keyIndex},System_Constants.MODULE_PAGE,"dataForm",this)}
+    onEdit={() => FILL_VALUES(keyIndex,this)} createdby={element.action_by} />
+    </Grid>
     ));
     
   const HeaderButton = <HeaderButtonBuilder 
@@ -184,15 +173,16 @@ render(){
     <AppBarBuilder 
       IS_LOADING={this.state.IS_LOADING}
       headerButton={HeaderButton} 
+      PARENT={this.props.PARENT}
       headerTitle={System_Constants.MODULE_NAME} 
-      headerIcon={RateReviewIcon} />
+      headerIcon={PeopleIcon} />
     
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Grid 
             container 
             direction="row"
-            justify="center"
+            justify="flex-start"
             spacing={1}
             >
                 {/* Search Grid */}
@@ -210,23 +200,21 @@ render(){
                 formState={this.state.ADD_FLAG}
                 title={`Add New ${System_Constants.MODULE_NAME}`} 
                 Form={uiForm} />
+
                 <FormBlockBuilder 
                 formState={this.state.EDIT_FLAG}
                 title={`Edit ${System_Constants.MODULE_NAME}`}
                 Form={uiEditForm} />
-				{/* End FormBlock here*/}
-
-          <Grid item xs={12}>
-            {allData}  
-          </Grid>
+			        	{/* End FormBlock here*/} 
+             {!(this.state.ADD_FLAG || this.state.EDIT_FLAG) && allData}  
         {/* Start NoDataBuilder here*/}
-        <NoDataBuilder
+      </Grid>
+      <NoDataBuilder
           isRendor={(this.state.DATA_ARRAY.length === 0 && this.state.ADD_FLAG === false)}
           title={this.state.NO_DATA_CONTENT.title}
           description={this.state.NO_DATA_CONTENT.description}
           type={this.state.NO_DATA_CONTENT.type}
          />
-      </Grid>
     </main>
 
     </ div>

@@ -4,11 +4,12 @@
     "config": {
         "elementType": "input",
         "grid": 6,
+        "readOnly": true,
         "label": "First Name",
         "placeholder": "Your First Name",
         "type": "text",
         "helperText": "",
-        "value": "Shivam",
+        "value": "",
         "validation": {
           "required": {"value": true,"msg":"This field is required."}
         },
@@ -20,11 +21,12 @@
     "config": {
         "elementType": "input",
         "grid": 6,
+        "readOnly": true,
         "label": "Last Name",
         "placeholder": "Your Last Name",
         "type": "text",
         "helperText": "",
-        "value": "Sharma",
+        "value": "",
         "validation": {
           "required": {"value": true,"msg":"This field is required."}
         },
@@ -36,12 +38,13 @@
     "config": {
         "elementType": "input",
         "grid": 6,
+        "readOnly": true,
         "label": "Email",
         "placeholder": "Your E-mail",
         "autoComplete": "email",
         "type": "email",
         "helperText": "",
-        "value": "shivam@c-zentrix.com",
+        "value": "",
         "validation": {
           "required": {"value": true,"msg":"This field is required."}
         },
@@ -53,6 +56,7 @@
     "config": {
         "elementType": "input",
         "grid": 12,
+        "readOnly": true,
         "label": "Company",
         "placeholder": "Your Company",
         "type": "text",
@@ -69,6 +73,7 @@
     "config": {
         "elementType": "input",
         "grid":6,
+        "readOnly": true,
         "label": "Phone",
         "placeholder": "Your Phone",
         "type": "tel",

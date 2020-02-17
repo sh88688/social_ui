@@ -1,0 +1,51 @@
+[
+    {
+        "id": "request_type",
+        "config": {
+          "elementType": "native-select",
+          "grid": 6,
+          "label": "Ticket Type",
+          "placeholder":"-- Select --",
+          "helperText": "",
+          "autoFocus": true,
+          "value": "",
+          "options": [
+            {
+              "value": "query ",
+              "displayValue": " Query"
+            },
+            {
+              "value": "complaint ",
+              "displayValue": " Complaint"
+            },
+            {
+              "value": "issue ",
+              "displayValue": " Issue"
+            }
+          ],
+          "validation": {
+            "required": {"value": true,"msg":"This field is required."}
+          },
+          "valid": true
+        }
+      },
+      {
+      
+          "id": "problem_reported",
+          "config": {
+              "elementType": "textarea",
+              "grid": 11,
+              "label": "Ticket Description",
+              "placeholder": "Start Typing...",
+              "rows": 3,
+              "rowsMax": 4,
+              "helperText": "",
+              "value": "",
+              "validation": {
+              "required": {"value": true,"msg":"Ticket Descriptioin is required"}
+              },
+              "valid": true
+          }  
+      }
+    ]
+  

@@ -99,12 +99,16 @@ class FormRender extends Component {
   Input_Changer = (event, inputIdentifier) => {
     //make a copy of iForm State
     const updatedFormElement = this.state.iForm;
-
     //update changed value
     if(updatedFormElement.config.type === "file")
     {
       updatedFormElement.config.value = event.target.value;
       updatedFormElement.config.file  = event.target.files[0];
+    }
+    else if(updatedFormElement.config.elementType === "native-select"){
+      let index = event.nativeEvent.target.selectedIndex;
+      updatedFormElement.config.displaytext = event.nativeEvent.target[index].text;
+      updatedFormElement.config.value = event.target.value;
     }
     else
     {

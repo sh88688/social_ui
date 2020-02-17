@@ -1,11 +1,11 @@
 function checkValidity(value, rules) {
     let validityObj = { isValid: true, errorText: "" };
-if(Array.isArray(value))
-{
-  value = value.toString();
-  console.log('VALID ==> ',value);
-  console.log(value.trim() !== "");
-}
+    if(Array.isArray(value))
+    {
+      value = value.toString();
+      
+    }
+
 if(Object.entries(rules).length !== 0)
 {
   if (rules.required.value) {
@@ -16,20 +16,20 @@ if(Object.entries(rules).length !== 0)
 
   if (rules.minLength && value.trim() !== "") {
     validityObj.isValid =
-      value.length >= rules.minLength && validityObj.isValid;
+      value.length >= rules.minLength.value && validityObj.isValid;
     validityObj.errorText =
-      value.length >= rules.minLength
+      value.length >= rules.minLength.value
         ? validityObj.errorText
-        : `Please enter atleast ${rules.minLength} characters.`;
+        : `* ${rules.minLength.msg}`;
   }
 
   if (rules.maxLength && value.trim() !== "") {
     validityObj.isValid =
-      value.length <= rules.maxLength && validityObj.isValid;
+      value.length <= rules.maxLength.value && validityObj.isValid;
     validityObj.errorText =
-      value.length <= rules.maxLength
+      value.length <= rules.maxLength.value
         ? validityObj.errorText
-        : `Please enter no more ${rules.maxLength} characters.`;
+        : `* ${rules.maxLength.msg}`;
   }
 
   if (rules.isEmail && value.trim() !== "") {
@@ -38,7 +38,7 @@ if(Object.entries(rules).length !== 0)
     validityObj.isValid = regex.test(value) && validityObj.isValid;
     validityObj.errorText = regex.test(value)
       ? validityObj.errorText
-      : "Please enter a valid e-mail.";
+      : `* ${rules.isEmail.msg}`;
   }
   if (rules.isDigit && value.trim() !== "") {
     let regex = /^\d+$/;
@@ -46,7 +46,7 @@ if(Object.entries(rules).length !== 0)
     validityObj.isValid = regex.test(value) && validityObj.isValid;
     validityObj.errorText = regex.test(value)
       ? validityObj.errorText
-      : "Please enter only digits.";
+      : `* ${rules.isDigit.msg}`;
   }
   if (rules.isAlpha && value.trim() !== "") {
     let regex = /^[a-zA-Z]+$/;
@@ -54,7 +54,7 @@ if(Object.entries(rules).length !== 0)
     validityObj.isValid = regex.test(value) && validityObj.isValid;
     validityObj.errorText = regex.test(value)
       ? validityObj.errorText
-      : "Please enter only alphabets.";
+      : `* ${rules.isAlpha.msg}`;
   }
 
 }

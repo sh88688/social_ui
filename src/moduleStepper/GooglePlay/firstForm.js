@@ -1,9 +1,9 @@
 import React from 'react';
 //Components
 import FormRender from '../../Components/FormRender';
-import FormBlockBuilder from '../../Components/FormBlockBuilder';
+
 //Material UI
-import {makeStyles, withStyles, Grid, Button} from "../../theme/muiComponents";
+import {withStyles, Grid} from "../../theme/muiComponents";
 
 const styles = theme => ({
     root: {
@@ -13,9 +13,6 @@ const styles = theme => ({
   });
 
 class FirstForm extends React.Component {
-    constructor(props){
-        super(props);
-    }
 
     render(){
         const {classes} = this.props;
