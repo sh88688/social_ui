@@ -52,6 +52,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PhoneIcon from '@material-ui/icons/Phone';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 import ProfileIcon from "@material-ui/icons/AccountCircle";
 import RateReviewIcon from '@material-ui/icons/RateReview';
 import ReplyIcon from '@material-ui/icons/Reply';
@@ -125,6 +126,7 @@ export {
     ModelIcon,
     MoreVertIcon,
     NotificationsIcon,
+    PostAddIcon,
     ProfileIcon,
     PhoneIcon,
     PhoneIphoneIcon,

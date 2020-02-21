@@ -2,15 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 
 //Material UI
-import {withStyles, Tooltip, CircularProgress, fade, Badge,InputBase, Grid,List, ListItem,Divider, ListItemText, ListItemAvatar,Card, CardHeader, Avatar, CardContent, CardActions, IconButton, Typography } from "../theme/muiComponents";
+import {withStyles, AppBar, Toolbar, Button, Tooltip, CircularProgress, fade, Badge,InputBase, Grid,List, ListItem,Divider, ListItemText, ListItemAvatar,Card, CardHeader, Avatar, CardContent, CardActions, IconButton, Typography } from "../theme/muiComponents";
 import {animateScroll as scroll} from 'react-scroll';
  
 //Icons Material UI
-import {FacebookIcon, ConfirmationNumberIcon, HistoryIcon, AssignmentIcon, SearchIcon, DeleteIcon} from "../theme/muiIcons";
+import {FacebookIcon, ForumIcon, FlagIcon, ConfirmationNumberIcon, HistoryIcon, AssignmentIcon, SearchIcon, DeleteIcon} from "../theme/muiIcons";
 
 
 //Components
 import AppBarBuilder from '../Components/AppBarBuilder';
+import FacebookPage from './fbPage';
 import NoDataBuilder from '../Components/NoDataBuilder';
 import BubbleMessage from  '../Components/bubbleMessageBuilder';
 //Modular Functions
@@ -27,6 +28,7 @@ import TicketHistoryDialog from '../Components/TicketHistoryDialog';
 import TemplateDialog from '../Components/TemplateDialog';
 import {SERVER_IP, PROTOCOL} from '../Configs/apiConf';
 import Picker from 'emoji-picker-react';
+
 
 //CSS Styles
 const styles = theme => ({
@@ -55,6 +57,10 @@ const styles = theme => ({
       },
       listRoot:{
         padding:"unset",
+      },
+      gridContainerTop:{
+        maxWidth: "1050px",
+
       },
       gridContainer:{
         maxWidth: "1050px",
@@ -246,7 +252,7 @@ System_Constants.API_PAGE="intents";
 System_Constants.MODULE_PAGE="/intents";
 System_Constants.ID_FIELD="intent_id";
 System_Constants.FIELD_NAME='intent_name'
-System_Constants.MODULE_NAME="Chat";
+System_Constants.MODULE_NAME="Facebook Page";
 
 
 class FBCHAT extends React.Component {
@@ -256,6 +262,7 @@ class FBCHAT extends React.Component {
           this.state = {
             ADD_FLAG:false,
             isPicker : false,
+            isPageView : false,
             isTemplateLoaded : false,
             pagePicture: null,
             CONFIG: props.CONFIG,
@@ -297,7 +304,9 @@ UNSAFE_componentWillReceiveProps(nextProps){
   }
   
 }
-
+handleManagePageToggle = () =>{
+  this.setState({ isPageView : !this.state.isPageView});
+}
 handleChatState = (nextProps) =>{
   let promise = new Promise((resolve, reject) =>{
 
@@ -523,21 +532,29 @@ render(){
           <Divider variant="fullWidth" component="li"/>
       </React.Fragment>)
   });
+  const HeaderButton = (this.props.processing ? null : <Button 
+    color="primary"
+    onClick={this.handleManagePageToggle}
+    startIcon={this.state.isPageView ? <ForumIcon /> : <FlagIcon />}
+    variant="outlined" >{this.state.isPageView ? "View Chats" :"Manage Your Page"}
+    </Button>);
 
   return (
     <div className={classes.rootDiv}>
     <AppBarBuilder 
-      IS_LOADING={this.state.IS_LOADING}
+      IS_LOADING={this.props.processing}
       PARENT={this.props.PARENT}
+      headerButton={HeaderButton} 
       headerTitle={System_Constants.MODULE_NAME} 
       headerIcon={FacebookIcon} />
     
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <DialogBuilder isopen={this.state.dialogOpen} dialogTitle={this.state.dialogTitle} dialogContent={this.state.dialogContent} ok={() => this.setState({dialogOpen : false})} />
-      {this.props.processing && <div style={{textAlign : "center"}}>
-        <CircularProgress color="secondary" /></div>}
-        {(this.state.DATA_ARRAY.length !== 0) && 
+
+        {this.state.isPageView && <FacebookPage handler={this.handleManagePageToggle} info={this.props.CONFIG} />}
+
+        {(this.state.DATA_ARRAY.length !== 0 && !this.state.isPageView) &&
         <Grid 
               container 
               direction="row"
@@ -706,7 +723,7 @@ render(){
                 loadedHandler={() => this.setState({isTemplateLoaded : true})}
                 toggle={this.getTemplateText} />
                 </React.Fragment>}
-    </main>
+      </main>
 
     </ div>
   );

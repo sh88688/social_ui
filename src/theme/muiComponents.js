@@ -8,6 +8,7 @@ import Card from "@material-ui/core/Card";
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -66,6 +67,7 @@ export {
     CardActions,
     CardContent,
     CardHeader,
+    CardMedia,
     Checkbox,
     Chip,
     CircularProgress,

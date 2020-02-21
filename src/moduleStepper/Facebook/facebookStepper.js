@@ -209,7 +209,7 @@ handlePageSubscribe = (page_id, token) => {
       body: JSON.stringify(data)
     }
     //console.log(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
-    const url = new URL(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
+    const url = new URL(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=feed,messages,message_echoes`);
 
     fetchCall(url,fetchCallOptions,"json").then((result) => {
         if(result.success){

@@ -314,6 +314,7 @@ class App extends React.Component {
   componentWillUnmount(){
     //console.log("%c!! FUNC-INFO => [App.js] componentWillUnmount  !!","color: brown;font-weight:800;");
     this.sseSource.close();
+    this.sseChatSource.close();
   }
 
   notiClickToggle = (event) =>{

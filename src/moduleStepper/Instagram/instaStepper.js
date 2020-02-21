@@ -4,22 +4,22 @@ import clsx from 'clsx';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PublishIcon from '@material-ui/icons/Publish';
-import VideoLabelIcon from '@material-ui/icons/VideoLabel';
 import StepConnector from '@material-ui/core/StepConnector';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 //Components
+import FirstForm from './firstForm';
+import SecondForm from './secondForm';
 import isFormValid from '../../Components/FormValidSetter';
 import fetchCall from '../../Components/FetchCaller';
 //FORM SCHEMA
 import formJson1 from '../../FormSchema/googlePlayForm1.json';
-import formJson2 from '../../FormSchema/googlePlayForm2.json';
+import formJson2 from '../../FormSchema/facebookForm2.json';
 
 //Material UI
 import {makeStyles, withStyles, Button} from "../../theme/muiComponents";
-
+import {FlagIcon, FacebookIcon, DoneIcon} from "../../theme/muiIcons";
+import {SERVER_IP, PROTOCOL, ROUTE_FOLDER} from '../../Configs/apiConf';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -73,9 +73,9 @@ function ColorlibStepIcon(props) {
   const { active, completed } = props;
 
   const icons = {
-    1: <SettingsIcon />,
-    2: <PublishIcon />,
-    3: <VideoLabelIcon />,
+    1: <FacebookIcon />,
+    2: <FlagIcon />,
+    3: <DoneIcon />,
   };
 
   return (
@@ -116,7 +116,7 @@ const styles = theme => ({
 });
 
 function getSteps() {
-  return ['Fill App Details', 'Upload JSON Credentials', 'All Done'];
+  return ['Account Login', 'Select Your Facebook Page', 'All Done'];
 }
 
 
@@ -128,6 +128,12 @@ class InstaStepper extends React.Component {
         super(props);
         this.state = {
             activeStep : 0,
+            userToken: "",
+            userId: "",
+            userPageId: "",
+            userPageName: "",
+            userPageToken: "",
+            isLoggedIn: false,
             Uploading: false,
             firstForm: formJson1,
             secondForm: formJson2
@@ -135,14 +141,14 @@ class InstaStepper extends React.Component {
     }
 
     componentWillUnmount(){
-      console.log("===STEPPER== WUM ",this.state.firstForm[0].config);
+      //console.log("===STEPPER== WUM ",this.state.firstForm[0].config);
       this.setState({firstForm : JSON.parse(this.DEFAULT_JSON1)});
     }
     componentWillReceiveProps(nextProps) {
       if(this.props.info !== nextProps.info)
       {
-        console.log("===== [googleStepper.js] componentWillReceiveProps =====",nextProps.info);
-        if(nextProps.info.statusCode === "2001")
+        //console.log("===== [googleStepper.js] componentWillReceiveProps =====",nextProps.info);
+        if(nextProps.info.statusCode === "2001" && nextProps.info.moduleInfo.subModule === 'facebook')
         {
           this.setState((prevState, props) => {
             return {activeStep: prevState.activeStep + 1, secondForm : JSON.parse(this.DEFAULT_JSON2)};
@@ -155,83 +161,129 @@ class InstaStepper extends React.Component {
 getStepContent = (step) => {
   switch (step) {
     case 0:
-      // return <FirstForm handler={this.handleFormState} Form={this.state.firstForm} />;
-      return "Instagram is under development.";
+      return <FirstForm COMPONENT={this} isLoggedIn={this.state.isLoggedIn} />;
     case 1:
-    //   return <SecondForm loading={this.state.Uploading} handler={this.handleFormState} Form={this.state.secondForm} />;
-    return <Typography >Not Available.</Typography>;
+      return <SecondForm loading={this.state.Uploading} COMPONENT={this} pageName={this.state.userPageName} pageId={this.state.userPageId} userId={this.state.userId} userToken={this.state.userToken} handler={this.handleFormState} Form={this.state.secondForm} />;
     case 2:
-      return <Typography >Your Google Play Account is Successfully Integrated.</Typography>;
+      return <Typography >Your Facebook Page is Successfully Integrated with CZ Social.</Typography>;
     default:
       return 'Unknown step';
   }
 }
 
 handleFormState = (updatedFormState,index) =>{
-	console.log(`onChangeform`);
+	//console.log(`onChangeform`);
+}
+handlePageAccessToken = (page_id, token) =>{
+  let promise = new Promise((resolve, reject) => {
+
+          const fetchCallOptions = {
+            method: 'GET',
+          };
+          const url = new URL(`https://graph.facebook.com/v5.0/${page_id}?fields=access_token&access_token=${token}`);  
+          fetchCall(url,fetchCallOptions,"json").then((result) => {
+              if(result.access_token){
+                //console.log('PAGE ACCESS TOKEN ',result);
+                  if(result.access_token) {
+                    resolve(result.access_token);
+                  }
+              }         
+            },
+            (error) => {
+              //console.log(error);
+            });
+
+  });
+  return promise;
+}
+handlePageSubscribe = (page_id, token) => {
+  let promise = new Promise((resolve, reject) => {
+    const data = {};
+    data.access_token = token;
+    //console.log('subscribe token ',data);
+    const fetchCallOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }
+    //console.log(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
+    const url = new URL(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
+
+    fetchCall(url,fetchCallOptions,"json").then((result) => {
+        if(result.success){
+          resolve(result.success);
+        }         
+      },
+      (error) => {
+        //console.log(error);
+      });
+   });
+  return promise;
 }
 handlePostData = () => {
-  
-  const Data = {};
-  Data.event = "playStoreConfiguration";
-  Data.action="create";
-  Data.client_id="1";
-  Data.event_by="Admin";
-  Data.moduleInfo = {};
-  Data.moduleInfo.module = "/integration";
-  Data.moduleInfo.subModule = "google_play";
-  Data.moduleInfo.action="1";
-  Data.moduleInfo.moduleRoute={name: "/googleReviews", value: true};
-  Data.data = {};
-  Data.data.app_name = this.state.firstForm[0].config.value;
-  Data.data.package_name = this.state.firstForm[1].config.value;
-  Data.data.multipart = [];
-  const multipartObj = {};
-  multipartObj.upload_type = "single";
-  multipartObj.field_name = "playstore_file";
-  multipartObj.file_prefix = "playStoreCredentials_";
-  Data.data.multipart.push(multipartObj);
-  
-  console.log(Data);
-  const queryParam = JSON.stringify(Data);
-  const postData = new FormData();
-        postData.append('playstore_file',this.state.secondForm[0].config.file);
 
-  const fetchCallOptions = {
-    method: 'POST',
-    body: postData
-  };
-  const url = new URL(`http://172.16.3.46/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
-  fetchCall(url,fetchCallOptions,"text").then((result) => {
-        console.log(result);
-        this.props.tokenCallback(result);
-    },
-    (error) => {
-      console.log(error);
-    });
+  if(this.state.userToken !== "" && this.state.secondForm[0].config.value !== ""){
+      this.handlePageAccessToken(this.state.secondForm[0].config.value, this.state.userToken).then( page_access_token => {
+
+        this.handlePageSubscribe(this.state.secondForm[0].config.value, page_access_token).then(res => {
+          //console.log('handlePageSubscribe',res);  
+          if(res === true) {                       
+                const Data = {};
+                Data.event = "facebookConfiguration";
+                Data.action="create";
+                Data.client_id= this.props.clientId;
+                Data.event_by="Admin";
+                Data.moduleInfo = {};
+                Data.moduleInfo.module = `${ROUTE_FOLDER}/integration`;
+                Data.moduleInfo.subModule = "facebook";
+                Data.moduleInfo.action="1";
+                Data.moduleInfo.moduleRoute={name: `${ROUTE_FOLDER}/facebook`, value: true};
+                Data.data = {};
+                Data.data.user_id = this.state.userId;
+                Data.data.user_access_token = this.state.userToken;
+                Data.data.page_id = this.state.secondForm[0].config.value;
+                Data.data.page_name = this.state.secondForm[0].config.displaytext;
+                Data.data.page_access_token = page_access_token;
+                const queryParam = JSON.stringify(Data);           
+                const fetchCallOptions = {
+                  method: 'GET',
+                };
+                const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
+                //console.log(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
+                fetchCall(url,fetchCallOptions,"text").then((result) => {
+                      //console.log(result);
+                      this.props.tokenCallback(result);
+                  },
+                  (error) => {
+                    //console.log(error);
+                  });   
+          }
+      });}); 
+  }
+  else {
+    //console.warn("TOKEN EMPTY");
+  }
 
 }
- handleNext = () => {
- 
-      const formIndex = ['firstForm','secondForm'];
-      let Form = formIndex[this.state.activeStep];
-      let didFormValid = isFormValid(this.state[Form]);
-      this.setState({ [Form] : didFormValid.validatedForm }); 
-
+ handleNext = () => {    
       if(this.state.activeStep === 0)
       {
-        if (didFormValid.formValidity) {  
+        if (this.state.userId !== "" && this.state.userToken !=="") {  
           this.setState((prevState, props) => {
-            return {activeStep: prevState.activeStep + 1, secondForm : JSON.parse(this.DEFAULT_JSON2)};
+            return { activeStep: prevState.activeStep + 1 ,Uploading : true };
           });
         }
       }
       else if(this.state.activeStep === 1)
       {
+        let didFormValid = isFormValid(this.state.secondForm);
+        this.setState({ secondForm : didFormValid.validatedForm }); 
         if (didFormValid.formValidity) { 
-        this.handlePostData();
-        this.setState({Uploading : true});
-        }
+          this.handlePostData();
+          this.setState({Uploading : true});
+          }
       }
   };
  handleBack = () => {
@@ -255,7 +307,7 @@ handlePostData = () => {
      this.setState({activeStep: 0});
     };
 
-    render(){
+ render(){
         const {classes} = this.props;
         const steps = getSteps();
 
@@ -279,7 +331,7 @@ handlePostData = () => {
                   <Button
                     variant="contained"
                     color="secondary"
-                    disabled={true}
+                    disabled={!this.state.isLoggedIn}
                     onClick={this.state.activeStep === steps.length - 1 ? this.props.handler : this.handleNext}
                     className={classes.button}
                   >
