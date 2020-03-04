@@ -1,15 +1,16 @@
 import React from 'react';
 //Material UI
-import { Button,clsx, Divider, LinearProgress, IconButton,CardMedia, Paper, fade, InputBase, CardActions,TextField, withStyles, Typography, Grid, CircularProgress,Card, CardHeader, Avatar, CardContent} from "../theme/muiComponents";
-import {FacebookIcon,MoreVertIcon, EditIcon, ArrowBackIcon} from '../theme/muiIcons';
+import {  LinearProgress,Tooltip, IconButton,CardMedia, CardActions, withStyles, Typography, Grid, CircularProgress,Card, CardHeader, Avatar, CardContent} from "../theme/muiComponents";
+import {MoreVertIcon,ConfirmationNumberIcon, CommentIcon, EditIcon, ThumbUpAltIcon} from '../theme/muiIcons';
 import fetchCall from '../Components/FetchCaller';
-import DialogBuilder from '../Components/DialogBuilder';
+import CreatePost from '../Components/CreatePostDialog';
+import DropButton from '../Components/dropButton';
 import CommentBox from '../Components/CommentBoxBuilder';
+import CommentView from '../Components/CommentView';
 import Skeleton from '@material-ui/lab/Skeleton';
 //
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 const styles = theme => ({
     card: {
@@ -39,7 +40,7 @@ const styles = theme => ({
       padding : "0px 16px"
     },
     postActions :{
-      padding: '10px 16px',
+      padding: '2px 16px',
       borderTop: '1px solid lightgray'
     },
     cmntText:{
@@ -62,6 +63,11 @@ const styles = theme => ({
     moreIcn:{
       transform: 'rotate(90deg)',
       marginTop: "5px"
+    },
+    commentIcn:{ 
+    },
+    reactionIcn:{
+      color: "#1976d2"
     },
     fabProgress: {
       color: "#921aff",
@@ -154,28 +160,29 @@ class FacebookPage extends React.Component {
           loading : true,
           EDIT_FLAG: false,
           feeds: [],
+          isCommentView: false,
           userPageId: "",
           name: "",
           dialogOpen : false,
-          dialogTitle : "",
-          dialogContent: ""
         }
     }
     componentDidMount() {
-      this.pageFeeds();
+      this.pageFeeds('feed');
     }
     handleFormState = (updatedFormState,index) =>{
       //console.log(`onChangeform page `);
     }
-    pageFeeds = () => {
+    handleCommentView = (postId) =>{
+      this.setState({postId : postId, isCommentView : !this.state.isCommentView});
+    }
+    pageFeeds = (postType) => {
       const fields = `from,full_picture,application,place,updated_time,icon,message_tags,attachments{subattachments,media_type,media,title,url},shares,message,id,story,created_time`;
       const { page_id , page_access_token } = this.props.info;
       const fetchCallOptions = {
         method: 'GET',
       };
-        const url = new URL(`https://graph.facebook.com/${page_id}/feed?fields=${fields}&access_token=${page_access_token}`);
+        const url = new URL(`https://graph.facebook.com/${page_id}/${postType}?fields=${fields}&access_token=${page_access_token}`);
         fetchCall(url,fetchCallOptions,"json").then( res => {
-          console.log('POSTS ',res.data);
           this.setState({feeds : res.data, loading : false});
         },
         (error) => {
@@ -187,9 +194,11 @@ class FacebookPage extends React.Component {
     }
     render(){
         const {classes} = this.props;
+        const avater = <Avatar src={`https://graph.facebook.com/v5.0/${this.props.info.page_id}/picture`} aria-label="recipe" />;
+
         return (
             <span className={classes.root}>
-            <DialogBuilder isopen={this.state.dialogOpen} dialogTitle={this.state.dialogTitle} dialogContent={this.state.dialogContent} ok={() => this.setState({dialogOpen : false})} />
+            <CreatePost open={this.state.dialogOpen} avatar={avater}  toggle={() => this.setState({dialogOpen : false})} />
           {!this.props.info.page_id ? <CircularProgress  size={30} thickness={4} className={classes.fabProgress} />
             :
             <Grid container
@@ -210,7 +219,7 @@ class FacebookPage extends React.Component {
                   <CardHeader
                     className={classes.cardHead}
                     avatar={
-                      this.state.loading ? <Skeleton variant="circle" width={40} height={40} animation="wave" /> : <Avatar src={`https://graph.facebook.com/v5.0/${this.props.info.page_id}/picture`} aria-label="recipe" />
+                      this.state.loading ? <Skeleton variant="circle" width={40} height={40} animation="wave" /> : avater
                     }
                     action={
                       <IconButton size="small" className={classes.moreIcn}  aria-label="settings">
@@ -237,7 +246,7 @@ class FacebookPage extends React.Component {
                 </Card>}
                </Grid>
                <Grid item xs={9}>
-                <Typography style={{marginLeft : "12px"}} variant="subtitle2">{this.state.loading ? 'Loading Post...': 'Posts'}</Typography>
+                {this.state.loading ? <Typography style={{marginLeft : "12px"}} variant="subtitle2">Loading Post...</Typography> : <DropButton handler={this.pageFeeds} />}
                 {this.state.feeds.map( (feed, index) => (
                   <Card key={index} className={classes.postCard}>
                   <CardHeader
@@ -246,17 +255,17 @@ class FacebookPage extends React.Component {
                       <Avatar src={`https://graph.facebook.com/v5.0/${feed.from.id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />
                     }
                     action={
+                      <Tooltip title="More Settings">
                       <IconButton size="small" className={classes.moreIcn} aria-label="settings">
-                        <MoreVertIcon />
+                       <MoreVertIcon />
                       </IconButton>
+                      </Tooltip>
                     }
                     title={`${feed.from.name}`}
-                    subheader={<div style={{display:"flex"}}> {new Date(feed.created_time).toLocaleString()}{feed.icon && <img style={{marginLeft: "10px"}} src={feed.icon} />}</div>}
+                    subheader={<div style={{display:"flex"}}> {new Date(feed.created_time).toLocaleString()}{feed.icon && <img style={{marginLeft: "10px"}} src={feed.icon} alt="media type" />}</div>}
                   />
                    <CardContent classes={{root : classes.rootLastChild}} className={classes.postCardContent}>
                       {feed.message && <p className={classes.cmntText}> {feed.message} </p>}
-
-
                       {(feed.attachments && feed.attachments.data[0].media_type === 'album') && <div className={classes.rootGridList}>
                           <GridList className={classes.gridList} cols={2.5}>
                             {feed.attachments.data[0].subattachments.data.map((tile, index) => (
@@ -276,14 +285,31 @@ class FacebookPage extends React.Component {
                       image={feed.full_picture}
                       title="Contemplative Reptile"
                     />}
-                    <CardActions className={classes.postActions} disableSpacing>
-                    <Avatar style={{width: 30, height : 30}} src={`https://graph.facebook.com/v5.0/${feed.from.id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />
-                        <CommentBox isPicker={false} /> 
+                    <CardActions className={classes.postActions} disableSpacing>   
+                    <React.Fragment>
+                      <Tooltip title="COMMENTS">
+                      <IconButton onClick={() => this.handleCommentView(feed.id)} className={classes.commentIcn} aria-label="settings">
+                      <CommentIcon />
+                      </IconButton>
+                      </Tooltip>
+                      <Tooltip title="REACTIONS">
+                      <IconButton className={classes.reactionIcn} aria-label="settings">
+                       <ThumbUpAltIcon />
+                      </IconButton>
+                      </Tooltip>
+                      </React.Fragment>
+                        {/* <CommentBox feedId={feed.id} avatar={<Avatar style={{width: 30, height : 30}} src={`https://graph.facebook.com/v5.0/${this.props.info.page_id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />} placeholder={`Comment as ${this.props.info.page_name}`}/>   */}
                      </CardActions>
                 </Card>
                 ))}
                </Grid>
             </Grid>}
+           {this.state.isCommentView && <CommentView 
+                 open={this.state.isCommentView}
+                 postId={this.state.postId}
+                 pageToken={this.props.info.page_access_token}
+                 toggle={() => this.setState({isCommentView: !this.state.isCommentView})}
+            />}
           </span>
       );
     }

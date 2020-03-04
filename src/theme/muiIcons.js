@@ -16,6 +16,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import CloseIcon from '@material-ui/icons/Close';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import CommentIcon from '@material-ui/icons/Comment';
 import DeleteIcon from "@material-ui/icons/DeleteForever";
 import DescriptionIcon from '@material-ui/icons/Description';
 import DoneIcon from '@material-ui/icons/Done';
@@ -27,6 +28,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import FacebookIcon from '@material-ui/icons/Facebook';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import ForumIcon from '@material-ui/icons/Forum';
 import FlagIcon from '@material-ui/icons/Flag';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -37,6 +39,7 @@ import InfoIcon from "@material-ui/icons/InfoOutlined";
 import InstagramIcon from '@material-ui/icons/Instagram';
 import IntegrationIcon from "@material-ui/icons/Autorenew";
 import IntentIcon from "@material-ui/icons/Textsms";
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import LabelIcon from "@material-ui/icons/Label";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -67,6 +70,7 @@ import ShopIcon from '@material-ui/icons/Shop';
 import SortIcon from "@material-ui/icons/Sort";
 import StoriesIcon from "@material-ui/icons/LibraryBooks";
 import SupportIcon from "@material-ui/icons/ContactSupport";
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import TrainingIcon from '@material-ui/icons/School';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -94,6 +98,7 @@ export {
     ClearAllIcon,
     CloseIcon,
     ConfirmationNumberIcon,
+    CommentIcon,
     DeleteIcon,
     DescriptionIcon,
     DoneIcon,
@@ -105,6 +110,7 @@ export {
     ExpandLess,
     ExpandMore,
     FacebookIcon,
+    FavoriteIcon,
     ForumIcon,
     FlagIcon,
     GetAppIcon,
@@ -115,6 +121,7 @@ export {
     InstagramIcon,
     IntentIcon,
     IntegrationIcon,
+    InsertEmoticonIcon,
     KeyboardArrowLeftIcon,
     LabelIcon,
     LockOutlinedIcon,
@@ -145,6 +152,7 @@ export {
     SortIcon,
     StoriesIcon,
     SupportIcon,
+    ThumbUpAltIcon,
     TwitterIcon,
     TrainingIcon,
     VisibilityIcon,

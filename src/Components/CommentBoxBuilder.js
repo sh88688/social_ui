@@ -1,8 +1,9 @@
 import React from 'react';
 //Material UI
-import {withStyles,Divider,Paper,InputBase,IconButton} from "../theme/muiComponents";
+import {withStyles,Divider,Grid, Paper,InputBase,IconButton} from "../theme/muiComponents";
 //Icons Material UI
-import { SendIcon, ClearIcon, SentimentVerySatisfiedIcon, EmojiEmotionsIcon} from "../theme/muiIcons";
+import {SentimentVerySatisfiedIcon, EmojiEmotionsIcon} from "../theme/muiIcons";
+import Picker from 'emoji-picker-react';
 const styles = theme => ({
   root: {
     padding: '1px 4px',
@@ -42,10 +43,22 @@ const styles = theme => ({
 
 
 class CommentBox extends React.Component {
-
-    handleChange = (event) =>{
-        this.props.handler(event.target.value);
+    constructor(props){
+      super(props);
+      this.state ={
+        replyText : "",
+        isPicker : false
+      }
     }
+    handlePicker = () =>{
+        this.setState({isPicker : !this.state.isPicker});
+    }
+    onEmojiClick = (event, emojiObject) =>{
+      this.setState({replyText : `${this.state.replyText} ${emojiObject.emoji}`})
+    }
+    handleText = (event) =>{
+      this.setState({replyText : event.target.value});
+  }
     handleClear = () =>{
         this.props.handler("");
     }
@@ -56,23 +69,36 @@ class CommentBox extends React.Component {
 
 
   render(){
-   const { classes } = this.props;
+   const { classes, placeholder } = this.props;
     return (
-      <React.Fragment>
+      <Grid 
+              container 
+              direction="row"
+              justify="center"
+              spacing={0}
+              className={classes.gridContainer}
+        >
+      <Grid item xs={12} style={{display : "flex"}}>
+      {this.props.avatar}
       <form style={{width : "100%", marginLeft: "10px"}} onSubmit={(event) => this.handleKeyField(event)}>
       <Paper className={classes.root}>
       <InputBase
         className={classes.input}
-        placeholder={"Comment as Fitness Official: Shivam sharma"}
-        value=""
+        placeholder={placeholder}
+        value={this.state.replyText}
+        onChange={this.handleText}
       />
       <Divider className={classes.divider} orientation="vertical" />
-      <IconButton className={classes.iconButton} aria-label="search">
-        {this.props.isPicker ? <EmojiEmotionsIcon color="secondary" size="small" /> : <SentimentVerySatisfiedIcon color="secondary" size="small" />}
+      <IconButton onClick={this.handlePicker} className={classes.iconButton} aria-label="search">
+        {this.state.isPicker ? <EmojiEmotionsIcon color="secondary" size="small" /> : <SentimentVerySatisfiedIcon color="secondary" size="small" />}
       </IconButton>
     </Paper>
     </form>
-    </React.Fragment>
+    </Grid>
+    <Grid item xs={12} ref={ node => this.emojiPicker = node }>
+    {this.state.isPicker && <Picker  onEmojiClick={this.onEmojiClick}/>}
+    </Grid>
+    </Grid>
     );
   }
 

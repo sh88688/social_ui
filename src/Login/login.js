@@ -143,7 +143,6 @@ class Login extends React.Component {
     fetchCall(url, fetchCallOptions, "json").then((result) => {
           if(result.appCode === 200)
           {
-             console.log("login ", result);
               formJsonResetter(SigninFormJson); 
               this.setState({
                 isLoading: false,

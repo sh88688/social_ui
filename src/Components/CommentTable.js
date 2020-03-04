@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles'; 
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,13 +11,19 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import CommentIcon from '@material-ui/icons/Comment';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import ReplyIcon from '@material-ui/icons/Reply';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
+import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
+import DialogBuilder from './DialogParentComment';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -44,13 +50,11 @@ function getSorting(order, orderBy) {
 }
 
 const headCells = [
-  { id: 'docket_no', numeric: false, disablePadding: false, label: 'Docket No' },
-  { id: 'ticket_type', numeric: false, disablePadding: false, label: 'Ticket Type' },
-  { id: 'priority', numeric: false, disablePadding: false, label: 'Priority' },
-  { id: 'problem_reported', numeric: false, disablePadding: false, label: 'Problem Reported' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
-  { id: 'action_by', numeric: false, disablePadding: false, label: 'Created By' },
-  { id: 'action_on', numeric: false, disablePadding: false, label: 'Modified on' },
+  { id: 'from', numeric: false, disablePadding: false, label: 'From' },
+  { id: 'message', numeric: false, disablePadding: false, label: 'Message' },
+  { id: 'wrote_on', numeric: false, disablePadding: false, label: 'Wrote On' },
+  { id: 'created_on', numeric: false, disablePadding: false, label: 'Created Time' },
+  { id: 'actions', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
 function EnhancedTableHead(props) {
@@ -194,11 +198,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function TicketTable(props) {
+export default function EnhancedTable(props) {
   const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [order, setOrder] = React.useState('desc');
+  const [orderBy, setOrderBy] = React.useState('created_on');
   const [selected, setSelected] = React.useState([]);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogContent, setDialogContent] = React.useState({});
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -207,7 +213,11 @@ export default function TicketTable(props) {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const getParentComment = (parentId) =>{
+    const commentIndex = props.rows.findIndex(row => row.comment_id === parentId);
+    setDialogContent(props.rows[commentIndex]);
+    setDialogOpen(true);
+  }
   const handleSelectAllClick = event => {
     if (event.target.checked) {
       const newSelecteds = props.rows.map(n => n.name);
@@ -230,6 +240,7 @@ export default function TicketTable(props) {
 
   return (
     <div className={classes.root}>
+    <DialogBuilder isopen={dialogOpen} pageToken={props.pageToken} dialogTitle={"Wrote on"} dialogContent={dialogContent} ok={() => setDialogOpen(false)} />
       <Paper className={classes.paper}>
         <TableContainer>
           <Table
@@ -251,25 +262,43 @@ export default function TicketTable(props) {
               {stableSort(props.rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const actionOn = new Date(row.action_on*1000).toLocaleString();
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
-                      
-                      style={{cursor : "pointer"}}
+                      style={{cursor : "pointer",}}
                       hover
-                      key={row.docket_no}
+                      key={index}
                     >
-                      <TableCell style={{paddingLeft: "15px"}} component="th" id={labelId} scope="row" padding="none">
-                        {row.docket_no}
+                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                        <span style={{display:"flex",alignItems:"center", padding:"8px"}}> 
+                        <Avatar
+                        alt={`Avatar n°${index + 1}`}
+                        src={`https://graph.facebook.com/v5.0/${row.from.id}/picture?access_token=${props.pageToken}`}
+                        /> 
+                        <span style={{marginLeft: "8px"}}>{row.from.name}</span>
+                        </span>
                       </TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.ticket_type}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.priority}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.problem_reported}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.status}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.action_by}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{actionOn}</TableCell>
+                      <TableCell className={classes.textLimit} align="left">{row.message}</TableCell>
+                      <TableCell className={classes.textLimit} align="left">{row.action_on === 'comment' ? 
+                      <Tooltip title="VIEW COMMENT">
+                      <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => getParentComment(row.parent_id)}
+                          className={classes.button}
+                          endIcon={<CommentIcon />}
+                        >
+                          Comment
+                        </Button></Tooltip>: <p>POST</p>}</TableCell>
+                      <TableCell className={classes.textLimit} align="left">{new Date(row.created_time * 1000).toLocaleString()}</TableCell>
+                      <TableCell className={classes.textLimit} align="left">
+                          <IconButton aria-label="delete">
+                          <ConfirmationNumberIcon />
+                          </IconButton>
+                          <IconButton aria-label="delete">
+                          <ReplyIcon />
+                          </IconButton>
+                        </TableCell>
                     </TableRow>
                   );
                 })}

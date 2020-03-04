@@ -5,9 +5,6 @@ import {Grid, Select, ListItemText, FormHelperText, InputLabel, withStyles, Butt
 //Icons Material UI
 import {HelpOutline} from "../theme/muiIcons";
 
-
-
-
 const styles = theme => ({
   cursor: {
     cursor: "pointer",
@@ -39,7 +36,6 @@ const styles = theme => ({
     width: 200
   }
 });
-
 
 const MenuProps = {
   PaperProps: {

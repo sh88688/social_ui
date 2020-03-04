@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 //Material UI
-import {withStyles, AppBar, Toolbar, Button, Tooltip, CircularProgress, fade, Badge,InputBase, Grid,List, ListItem,Divider, ListItemText, ListItemAvatar,Card, CardHeader, Avatar, CardContent, CardActions, IconButton, Typography } from "../theme/muiComponents";
+import {withStyles, Button, Tooltip, CircularProgress, fade, Badge,InputBase, Grid,List, ListItem,Divider, ListItemText, ListItemAvatar,Card, CardHeader, Avatar, CardContent, CardActions, IconButton, Typography } from "../theme/muiComponents";
 import {animateScroll as scroll} from 'react-scroll';
  
 //Icons Material UI
@@ -291,7 +291,7 @@ class FBCHAT extends React.Component {
   }
 
 handleFormState = (updatedFormState,index) =>{
-// //console.log("intent ====> ",this.state.dataForm);
+ //console.log("intent ====> ",this.state.dataForm);
 }
 
 UNSAFE_componentWillReceiveProps(nextProps){
@@ -347,10 +347,7 @@ toggleTemplate = () => {
 emojiToggle = (event) =>{
   this.setState({ isPicker : !this.state.isPicker},()=>{
     if(this.state.isPicker){
-      this.emojiPicker.children[0].children[1].remove();
       this.Chatter.style.height = '130px';
-      this.emojiPicker.children[0].style.width = '100%';
-      this.emojiPicker.children[0].style.height = '170px';
     }
     else {
       this.Chatter.style.height = '300px';
@@ -400,7 +397,6 @@ sendMongoHandler = (postData) => {
   };
     const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/notification/outgoingMongo.php`);
     fetchCall(url,fetchCallOptions,"json").then( res => {
-      console.log('outmonhgo ',res);
     },
     (error) => {
       //console.log(error);
@@ -459,7 +455,6 @@ handleSendReply = (recipient, text) => {
         this.sendMongoHandler(mongoPacket);
         const CHAT_INDEX = this.state.DATA_ARRAY.findIndex(e => e.sender === recipient);
         const DATA_ARRAY_COPY = [...this.state.DATA_ARRAY];
-        console.log('sendPacket',mongoPacket);
         DATA_ARRAY_COPY[CHAT_INDEX].messages.push(messagePacket);
         this.setState({DATA_ARRAY : DATA_ARRAY_COPY},this.scrollToBottom);
       }
