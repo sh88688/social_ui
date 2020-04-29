@@ -10,7 +10,7 @@ const styles = theme => ({
 
 const DialogBuilder = props => {
   const { classes } = props;
-
+  const content = (props.type === 'code') ? <code>{props.dialogContent}</code> : props.dialogContent;
   return (
       <div>
       <Dialog
@@ -25,7 +25,7 @@ const DialogBuilder = props => {
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          <code>{props.dialogContent}</code>
+          {content}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

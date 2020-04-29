@@ -4,6 +4,9 @@ import {withStyles,Divider,Grid, Paper,InputBase,IconButton} from "../theme/muiC
 //Icons Material UI
 import {SentimentVerySatisfiedIcon, EmojiEmotionsIcon} from "../theme/muiIcons";
 import Picker from 'emoji-picker-react';
+import fetchCall from './FetchCaller';
+import DialogBuilder from './DialogBuilder';
+
 const styles = theme => ({
   root: {
     padding: '1px 4px',
@@ -46,8 +49,12 @@ class CommentBox extends React.Component {
     constructor(props){
       super(props);
       this.state ={
+        loading: false,
         replyText : "",
-        isPicker : false
+        isPicker : false,
+        dialogOpen : false,
+        dialogTitle  : "",
+        dialogContent : ""
       }
     }
     handlePicker = () =>{
@@ -58,26 +65,45 @@ class CommentBox extends React.Component {
     }
     handleText = (event) =>{
       this.setState({replyText : event.target.value});
-  }
+    }
     handleClear = () =>{
-        this.props.handler("");
+      this.setState({replyText : ""});
     }
     handleKeyField = (event) =>{
       event.preventDefault();
-      this.props.sendHandler();
+      if(this.state.replyText !== ''){
+        this.sendHandler(this.state.replyText);
+      }
     }
-
+    sendHandler = (message) => {
+      this.setState({loading : true,replyText : ""});
+      const { feedId , pageToken } = this.props;
+      const fetchCallOptions = {
+        method: 'POST',
+      };
+        const url = new URL(`https://graph.facebook.com/${feedId}/comments?access_token=${pageToken}&message=${message}`);
+        fetchCall(url,fetchCallOptions,"json").then( res => {
+          console.log(res);
+          if(res.id){
+              this.setState({loading : false,dialogContent: "Successfully post your reply!", dialogTitle: "Comment", dialogOpen: true});
+          }
+        },
+        (error) => {
+          //console.log(error);
+        });
+    }
 
   render(){
    const { classes, placeholder } = this.props;
     return (
       <Grid 
-              container 
-              direction="row"
-              justify="center"
-              spacing={0}
-              className={classes.gridContainer}
+          container 
+          direction="row"
+          justify="center"
+          spacing={0}
+          className={classes.gridContainer}
         >
+      <DialogBuilder isopen={this.state.dialogOpen} dialogTitle={this.state.dialogTitle} dialogContent={this.state.dialogContent} ok={() => this.setState({dialogOpen : false})} />
       <Grid item xs={12} style={{display : "flex"}}>
       {this.props.avatar}
       <form style={{width : "100%", marginLeft: "10px"}} onSubmit={(event) => this.handleKeyField(event)}>
@@ -85,6 +111,7 @@ class CommentBox extends React.Component {
       <InputBase
         className={classes.input}
         placeholder={placeholder}
+        disabled={this.state.loading}
         value={this.state.replyText}
         onChange={this.handleText}
       />

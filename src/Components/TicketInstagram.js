@@ -33,7 +33,7 @@ Intial_NODATA.title = "No Chats Yet !";
 Intial_NODATA.description = "Chats are facebook page's conversations.";
 Intial_NODATA.type = "intial";
 
- class TicketDalog extends React.Component {
+ class TicketInstagram extends React.Component {
   DEFAULT_JSON = JSON.stringify(formJson);
   constructor(props){
       super(props);
@@ -48,17 +48,16 @@ Intial_NODATA.type = "intial";
     handleFormState = (updatedFormState,index) =>{
         //console.log(`onChange form`);
     }
-    handleGenerateTicket = ({ sender, first_name, last_name}) => {
+    handleGenerateTicket = () => {
         const { COMPONENT } = this.props;
-        const sendTo = JSON.stringify(sender);
         const Data = {};
         Data.action="create";
         Data.client_id= this.props.clientId;
         Data.event_by= this.props.clientEmail;
         Data.data = {};
-        Data.data.sender_id = sender;
-        Data.data.first_name = first_name;
-        Data.data.last_name = last_name;
+        Data.data.sender_id = this.props.commentId;
+        Data.data.first_name = "INSTAGRAM";
+        Data.data.last_name = "";
         Data.data.priority  = "SEVERITY 3";
         Data.data.ticket_type = this.state.dataForm[0].config.value;
         Data.data.problem_reported = this.state.dataForm[1].config.value;
@@ -67,15 +66,14 @@ Intial_NODATA.type = "intial";
           method: 'POST',
           body: queryParam
         };
-        const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/createChatTicket.php`);
+        const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/createInstaTicket.php`);
         setTimeout(() => {
         fetchCall(url,fetchCallOptions,"json").then((result) => {
           const {statusMsg, statusCode} = result;
               if(statusCode === "2001"){
-                //console.log('TICKET RESPONSE ',result);   
-                COMPONENT.setState({isTicketProcess: false,dialogOpen: true,dialogTitle: "Ticket Request",dialogContent: statusMsg});
-                this.setState({dataForm : JSON.parse(this.DEFAULT_JSON)});
-                COMPONENT.handleSendReply(JSON.parse(sendTo),statusMsg);
+                this.props.reply(statusMsg,"ticket");
+                this.setState({Processing: false,dataForm : JSON.parse(this.DEFAULT_JSON)});
+                this.props.toggle(); 
               }
           },
           (error) => {
@@ -83,12 +81,12 @@ Intial_NODATA.type = "intial";
           }); 
         }, 2000);
     }
+
     handleCreate = () =>{
         let didFormValid = isFormValid(this.state.dataForm);
         this.setState({ secondForm : didFormValid.validatedForm }); 
         if (didFormValid.formValidity) { 
-          this.props.COMPONENT.setState({isTicketProcess : true},this.handleGenerateTicket(this.props.userVariables));
-          this.props.toggle();
+          this.setState({Processing : true},this.handleGenerateTicket());
         }
     }
     handleClose = () => {
@@ -134,4 +132,4 @@ render(){
 
 
 }
-export default withStyles(style)(TicketDalog);
+export default withStyles(style)(TicketInstagram);

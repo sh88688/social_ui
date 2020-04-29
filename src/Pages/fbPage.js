@@ -1,14 +1,15 @@
 import React from 'react';
 //Material UI
 import {  LinearProgress,Tooltip, IconButton,CardMedia, CardActions, withStyles, Typography, Grid, CircularProgress,Card, CardHeader, Avatar, CardContent} from "../theme/muiComponents";
-import {MoreVertIcon,ConfirmationNumberIcon, CommentIcon, EditIcon, ThumbUpAltIcon} from '../theme/muiIcons';
+import {HistoryIcon, MoreVertIcon, CommentIcon, ThumbUpAltIcon, ConfirmationNumberIcon} from '../theme/muiIcons';
 import fetchCall from '../Components/FetchCaller';
-import CreatePost from '../Components/CreatePostDialog';
 import DropButton from '../Components/dropButton';
-import CommentBox from '../Components/CommentBoxBuilder';
 import CommentView from '../Components/CommentView';
+import CommentBox from '../Components/CommentBoxBuilder';
+import TicketDialog from '../Components/PostTicketDialog';
+import TicketHistoryDialog from '../Components/TicketHistoryDialog';
+import ReactionView from '../Components/ReactionView';
 import Skeleton from '@material-ui/lab/Skeleton';
-//
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 
@@ -31,8 +32,8 @@ const styles = theme => ({
     },
     postCard : {
       boxShadow : 'none',
-      margin : '16px',
-      maxWidth : '800px',
+      marginBottom: '12px',
+      maxWidth : '832px',
       borderRadius : "5px",
       border : '1px solid lightgrey'
     },
@@ -40,6 +41,7 @@ const styles = theme => ({
       padding : "0px 16px"
     },
     postActions :{
+      display: "block",
       padding: '2px 16px',
       borderTop: '1px solid lightgray'
     },
@@ -61,13 +63,23 @@ const styles = theme => ({
       height: '2px'
     },
     moreIcn:{
-      transform: 'rotate(90deg)',
-      marginTop: "5px"
+      marginTop: "5px",
+      transform: 'rotate(90deg)'
     },
     commentIcn:{ 
+      padding: "5px"
     },
     reactionIcn:{
+      padding: "5px",
       color: "#1976d2"
+    },
+    ticketIcn :{
+      color: "#ffb200",
+      padding: "5px",
+      transform: 'rotate(135deg)'
+    },
+    actionPage:{
+      minWidth: "117px"
     },
     fabProgress: {
       color: "#921aff",
@@ -161,12 +173,16 @@ class FacebookPage extends React.Component {
           EDIT_FLAG: false,
           feeds: [],
           isCommentView: false,
+          isReactionView: false,
+          isTicketHistory : false,
           userPageId: "",
-          name: "",
+          tempName: "",
           dialogOpen : false,
+          dialogTitle : "Ticket Response",
+          dialogContent: ""
         }
     }
-    componentDidMount() {
+    componentDidMount(){
       this.pageFeeds('feed');
     }
     handleFormState = (updatedFormState,index) =>{
@@ -174,6 +190,18 @@ class FacebookPage extends React.Component {
     }
     handleCommentView = (postId) =>{
       this.setState({postId : postId, isCommentView : !this.state.isCommentView});
+    }
+    handleReactionView = (postId) =>{
+      this.setState({postId : postId, isReactionView : !this.state.isReactionView});
+    }
+    handleTicketView = (postId, name) =>{
+      this.setState({postId : postId, tempName : name, isTicketView : !this.state.isTicketView});
+    }
+    handleTicketHistory = (postId, name) =>{
+      this.setState({postId : postId, tempName : name, isTicketHistory : !this.state.isTicketHistory});
+    }
+    handlePostComment = (postId, msg) => {
+      // console.log(postId,msg,'  ====> shiv');
     }
     pageFeeds = (postType) => {
       const fields = `from,full_picture,application,place,updated_time,icon,message_tags,attachments{subattachments,media_type,media,title,url},shares,message,id,story,created_time`;
@@ -198,61 +226,38 @@ class FacebookPage extends React.Component {
 
         return (
             <span className={classes.root}>
-            <CreatePost open={this.state.dialogOpen} avatar={avater}  toggle={() => this.setState({dialogOpen : false})} />
-          {!this.props.info.page_id ? <CircularProgress  size={30} thickness={4} className={classes.fabProgress} />
+             {!this.props.info.page_id ? <CircularProgress  size={30} thickness={4} className={classes.fabProgress} />
             :
             <Grid container
             direction="row"
             justify="center"
             alignItems="center" 
-            spacing={1}>
-              <Grid item xs={9}>
-              <Card className={classes.card}>
-              <CardHeader
-                    className={classes.cardHead}
-                    subheader={this.state.loading ? <Skeleton style={{width : "80px"}} animation="wave" /> : `Create post`}
-                  />
-              </Card>
-              </Grid>
+            spacing={2}>
               <Grid item xs={9}>
                   {this.props.info.page_id && <Card className={classes.card}>
                   <CardHeader
                     className={classes.cardHead}
+                    classes={{action : classes.actionPage}}
                     avatar={
                       this.state.loading ? <Skeleton variant="circle" width={40} height={40} animation="wave" /> : avater
                     }
                     action={
-                      <IconButton size="small" className={classes.moreIcn}  aria-label="settings">
-                        <MoreVertIcon />
-                      </IconButton>
+                      this.state.loading ? <Skeleton height={36} width="100%"  animation="wave" /> : <DropButton handler={this.pageFeeds} />
                     }
                     title={this.state.loading ? <Skeleton height={24} width="40%"  animation="wave" /> : <Typography style={{color :"#385898"}} variant="subtitle1">{this.props.info.page_name}</Typography>}
-                    subheader={this.state.loading ? <Skeleton height={17} width="15%" animation="wave" /> : `Facebook`}
+                    subheader={this.state.loading ? <Skeleton height={17} width="13%" animation="wave" /> : `Facebook`}
                   />
-                  <CardContent style={{padding : "0px 16px"}}>
-                        {this.state.loading ? <Skeleton height={43} width="90%" style={{marginBottom: "10px",marginLeft : "32px"}} animation="wave" /> : <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                        <EditIcon />
-                        </div>
-                        <Typography
-                        onClick={this.openDialog}
-                        className={classes.inputRoot}
-                        >
-                        Write a post...
-                        </Typography>
-                        </div>}
-                  </CardContent>
+
                   {this.state.loading && <LinearProgress classes={{root : classes.rootProgress}} color="secondary" />}
                 </Card>}
                </Grid>
                <Grid item xs={9}>
-                {this.state.loading ? <Typography style={{marginLeft : "12px"}} variant="subtitle2">Loading Post...</Typography> : <DropButton handler={this.pageFeeds} />}
                 {this.state.feeds.map( (feed, index) => (
                   <Card key={index} className={classes.postCard}>
                   <CardHeader
                     className={classes.cardHead}
                     avatar={
-                      <Avatar src={`https://graph.facebook.com/v5.0/${feed.from.id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />
+                      <Avatar src={`https://graph.facebook.com/v5.0/${feed.from ? feed.from.id : feed.id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />
                     }
                     action={
                       <Tooltip title="More Settings">
@@ -288,28 +293,66 @@ class FacebookPage extends React.Component {
                     <CardActions className={classes.postActions} disableSpacing>   
                     <React.Fragment>
                       <Tooltip title="COMMENTS">
-                      <IconButton onClick={() => this.handleCommentView(feed.id)} className={classes.commentIcn} aria-label="settings">
+                      <IconButton onClick={() => this.handleCommentView(feed.id)} classes={{root:classes.commentIcn}} aria-label="comments">
                       <CommentIcon />
                       </IconButton>
                       </Tooltip>
                       <Tooltip title="REACTIONS">
-                      <IconButton className={classes.reactionIcn} aria-label="settings">
+                      <IconButton onClick={() => this.handleReactionView(feed.id)} classes={{root:classes.reactionIcn}} aria-label="reactions">
                        <ThumbUpAltIcon />
                       </IconButton>
                       </Tooltip>
+                      <Tooltip title="CREATE TICKET">
+                      <IconButton onClick={() => this.handleTicketView(feed.id, feed.from.name)} classes={{root: classes.ticketIcn}} aria-label="create-ticket">
+                          <ConfirmationNumberIcon />
+                      </IconButton>
+                      </Tooltip>
+                      <Tooltip title="TICKET HISTORY">
+                      <IconButton onClick={() => this.handleTicketHistory(feed.id, feed.from.name)} classes={{root: classes.commentIcn}} aria-label="ticket-history">
+                          <HistoryIcon />
+                      </IconButton>
+                      </Tooltip>
                       </React.Fragment>
-                        {/* <CommentBox feedId={feed.id} avatar={<Avatar style={{width: 30, height : 30}} src={`https://graph.facebook.com/v5.0/${this.props.info.page_id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />} placeholder={`Comment as ${this.props.info.page_name}`}/>   */}
+
+                      <div style={{width:"100%", display:"block", margin: "10px 1px"}}>
+                        <CommentBox pageToken={this.props.info.page_access_token} feedId={feed.id} avatar={<Avatar style={{width: 30, height : 30}} src={`https://graph.facebook.com/v5.0/${this.props.info.page_id}/picture?access_token=${this.props.info.page_access_token}`} aria-label="recipe" />} placeholder={`Comment as ${this.props.info.page_name}`}/>  
+                      </div>
                      </CardActions>
                 </Card>
                 ))}
                </Grid>
-            </Grid>}
+              </Grid>}
            {this.state.isCommentView && <CommentView 
                  open={this.state.isCommentView}
                  postId={this.state.postId}
                  pageToken={this.props.info.page_access_token}
                  toggle={() => this.setState({isCommentView: !this.state.isCommentView})}
             />}
+           {this.state.isReactionView && <ReactionView 
+                 open={this.state.isReactionView}
+                 postId={this.state.postId}
+                 pageToken={this.props.info.page_access_token}
+                 toggle={() => this.setState({isReactionView: !this.state.isReactionView})}
+            />}
+           {this.state.isTicketView && <TicketDialog 
+                 open={this.state.isTicketView}
+                 postId={this.state.postId}
+                 clientId={this.props.clientId}
+                 clientEmail={this.props.clientEmail}
+                 fromName={this.state.tempName}
+                 pageToken={this.props.info.page_access_token}
+                 toggle={() => this.setState({isTicketView: !this.state.isTicketView})}
+            />}
+            {this.state.isTicketHistory &&  <TicketHistoryDialog 
+                userVariables={{"sender": this.state.postId,"page_name":this.props.info.page_name,"first_name" : this.state.tempName,"last_name":this.state.tempName}}
+                open={this.state.isTicketHistory}
+                COMPONENT={this}
+                clientId={this.props.clientId}
+                clientEmail={this.props.clientEmail}
+                sendReply={this.handlePostComment}
+                toggle={() => this.setState({isTicketHistory: !this.state.isTicketHistory})}
+                />
+              }
           </span>
       );
     }

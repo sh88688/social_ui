@@ -182,12 +182,10 @@ handlePageAccessToken = (page_id, token) =>{
           };
           const url = new URL(`https://graph.facebook.com/v5.0/${page_id}?fields=access_token&access_token=${token}`);  
           fetchCall(url,fetchCallOptions,"json").then((result) => {
-              if(result.access_token){
-                //console.log('PAGE ACCESS TOKEN ',result);
+
                   if(result.access_token) {
                     resolve(result.access_token);
-                  }
-              }         
+                  }       
             },
             (error) => {
               //console.log(error);

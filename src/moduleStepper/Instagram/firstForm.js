@@ -70,7 +70,7 @@ class FirstForm extends React.Component {
       else {                                 
         this.FB.login( response => {
           this.statusChangeCallback(response);
-        },{scope : "pages_show_list,public_profile,instagram_basic"}); 
+        },{scope : "instagram_basic,instagram_manage_comments,instagram_manage_insights,manage_pages,pages_show_list,public_profile"}); 
       }
     }
     fetchLongLivedToken = (token) =>{
@@ -93,7 +93,7 @@ class FirstForm extends React.Component {
     handleFacebookLogin = () => {
       this.FB.getLoginStatus( response => {
         this.statusChangeCallback(response);
-      },{scope : "pages_show_list,public_profile,instagram_basic"});
+      },{scope : "instagram_basic,instagram_manage_comments,instagram_manage_insights,manage_pages,pages_show_list,public_profile"});
       this.setState({loading : true});
     }
     render(){
@@ -129,7 +129,7 @@ class FirstForm extends React.Component {
                   classes={{containedSecondary : classes.button}}
                   startIcon={<FacebookIcon />}
                   >
-                    Instagram with Facebook
+                    Continue with Facebook
                   </Button>}
               </Grid>
             </Grid>}

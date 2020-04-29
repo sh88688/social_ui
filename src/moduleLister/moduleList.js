@@ -1,5 +1,5 @@
 //Icons Material UI
-import {ShopIcon,FacebookIcon, ConfirmationNumberIcon, DescriptionIcon, SettingIcon,ProfileIcon, SupportIcon,AccountIcon,LogoutIcon,PeopleIcon} from "../theme/muiIcons";
+import {ShopIcon,FacebookIcon, InstagramIcon, ConfirmationNumberIcon, DescriptionIcon, SettingIcon,ProfileIcon, SupportIcon,AccountIcon,LogoutIcon,PeopleIcon} from "../theme/muiIcons";
 import { ROUTE_FOLDER } from '../Configs/apiConf';
 
 const _SINGLE_ = "single";
@@ -18,6 +18,13 @@ const Modules = [
     name: "Facebook",
     icon: FacebookIcon,
     path: `${ROUTE_FOLDER}/facebook`,
+    isAddIcon: false
+},
+{
+    type: _SINGLE_,
+    name: "Instagram",
+    icon: InstagramIcon,
+    path: `${ROUTE_FOLDER}/instagram`,
     isAddIcon: false
 },
 {

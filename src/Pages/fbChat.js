@@ -545,9 +545,9 @@ render(){
     
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <DialogBuilder isopen={this.state.dialogOpen} dialogTitle={this.state.dialogTitle} dialogContent={this.state.dialogContent} ok={() => this.setState({dialogOpen : false})} />
+      <DialogBuilder type="code" isopen={this.state.dialogOpen} dialogTitle={this.state.dialogTitle} dialogContent={this.state.dialogContent} ok={() => this.setState({dialogOpen : false})} />
 
-        {this.state.isPageView && <FacebookPage handler={this.handleManagePageToggle} info={this.props.CONFIG} />}
+        {this.state.isPageView && <FacebookPage handler={this.handleManagePageToggle} clientEmail={this.props.clientEmail} clientId={this.props.clientId} info={this.props.CONFIG} />}
 
         {(this.state.DATA_ARRAY.length !== 0 && !this.state.isPageView) &&
         <Grid 
@@ -689,7 +689,7 @@ render(){
 
       </Grid>}
       <NoDataBuilder
-          isRendor={(this.state.DATA_ARRAY.length === 0 && !this.props.processing)}
+          isRendor={(this.state.DATA_ARRAY.length === 0 && !this.props.processing && !this.state.isPageView)}
           title={this.state.NO_DATA_CONTENT.title}
           description={this.state.NO_DATA_CONTENT.description}
           type={this.state.NO_DATA_CONTENT.type}
@@ -699,17 +699,19 @@ render(){
                 userVariables={{"sender":this.state.selectedChat.sender,"page_name":this.state.CONFIG.page_name,"first_name" : this.state.selectedChat.user.first_name,"last_name":this.state.selectedChat.user.last_name}}
                 open={this.state.isTicketDialog}
                 clientId={this.props.clientId}
+                clientEmail={this.props.clientEmail}
                 COMPONENT={this}
                 toggle={() => this.setState({isTicketDialog: !this.state.isTicketDialog})}
                 />
-            <TicketHistoryDialog 
+            {this.state.isTicketHistoryDialog && <TicketHistoryDialog 
                 userVariables={{"sender":this.state.selectedChat.sender,"page_name":this.state.CONFIG.page_name,"first_name" : this.state.selectedChat.user.first_name,"last_name":this.state.selectedChat.user.last_name}}
                 open={this.state.isTicketHistoryDialog}
                 COMPONENT={this}
                 clientId={this.props.clientId}
+                clientEmail={this.props.clientEmail}
                 sendReply={this.handleSendReply}
                 toggle={() => this.setState({isTicketHistoryDialog: !this.state.isTicketHistoryDialog})}
-                />
+                />}
             <TemplateDialog 
                 userVariables={{"page_name":this.state.CONFIG.page_name,"first_name" : this.state.selectedChat.user.first_name,"last_name":this.state.selectedChat.user.last_name}}
                 open={this.state.isTemplateDialog}

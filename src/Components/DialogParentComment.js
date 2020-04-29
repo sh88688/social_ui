@@ -1,11 +1,15 @@
 import React from "react";
 //Material UI
-import {withStyles,List, ListItem, ListItemText, ListItemAvatar, Avatar, Typography,Button,DialogContentText,Dialog,DialogTitle,DialogActions,DialogContent} from "../theme/muiComponents";
+import {withStyles,List, ListItem, ListItemText, ListItemAvatar, Avatar, Typography,Button,Dialog,DialogActions,DialogContent} from "../theme/muiComponents";
 
 const styles = theme => ({
-    root: {
-        display: "flex"
+  rootList: {
+        display: "flex",
+        padding: "unset"
       },
+    inline:{
+      marginBottom : "5px"
+    },
     paper:{
       minWidth: "400px"
     }
@@ -13,7 +17,7 @@ const styles = theme => ({
 
 const DialogBuilder = props => {
   const { classes } = props;
-
+  const createdDate = (props.type === "comment") ? props.dialogContent.created_time * 1000 : props.dialogContent.created_time;
   return (
       <div>
       <Dialog
@@ -24,7 +28,7 @@ const DialogBuilder = props => {
       classes={{ paper: classes.paper }}
      >
       <DialogContent style={{padding : "unset"}}>
-      <List className={classes.root}>
+      <List className={classes.rootList}>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
           {props.dialogContent.from && <Avatar alt="Remy Sharp" src={`https://graph.facebook.com/v5.0/${props.dialogContent.from.id}/picture?access_token=${props.pageToken}`} />}
@@ -41,7 +45,7 @@ const DialogBuilder = props => {
              {` - ${props.dialogContent.message}`}
             </Typography>
           </React.Fragment>}
-          secondary={`Created at ${new Date(props.dialogContent.created_time * 1000).toLocaleString()}`}
+          secondary={`Created at ${new Date(createdDate).toLocaleString()}`}
         />
       </ListItem>
       </List>

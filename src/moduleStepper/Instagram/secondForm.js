@@ -44,7 +44,7 @@ class SecondForm extends React.Component {
           method: 'GET',
         };
 
-          const url = new URL(`https://graph.facebook.com/v5.0/${userID}/accounts?access_token=${token}`);
+          const url = new URL(`https://graph.facebook.com/v6.0/${userID}/accounts?access_token=${token}`);
           fetchCall(url,fetchCallOptions,"json").then((result) => {
                 //console.log(result);
                 if(result.data)

@@ -20,13 +20,7 @@ const styles = makeStyles(theme => ({
     padding: "1px"
   },
   outlinedSecondary:{
-    color : "gray",
-    border : "1px solid lightgray",
-    '&:hover': {
-      color : "gray",
-      border : "1px solid #bdbcbc",
-      background : "#bfbdbd80"
-    }
+
   }
 }));
 export default function DropButton(props) {
@@ -42,7 +36,6 @@ export default function DropButton(props) {
   const handleMenuItemClick = (event, index) => {
     setSelectedIndex(index);
     const postType = ['feed','published_posts','visitor_posts'];
-    console.log(props,`You clicked ${postType[index]}`);
     props.handler(postType[index]);
     setOpen(false);
   };
@@ -62,7 +55,7 @@ export default function DropButton(props) {
   return (
     <Grid container direction="column" alignItems="flex-start">
       <Grid item xs={12}>
-        <ButtonGroup variant="outlined" style={{background: "white", padding: "1px !important"}} color="secondary" ref={anchorRef} aria-label="split button">
+        <ButtonGroup variant="outlined" style={{background: "white",marginTop : "5px", padding: "1px !important"}} color="secondary" ref={anchorRef} aria-label="split button">
           <Button classes={{root : classes.btnLabel, outlinedSecondary: classes.outlinedSecondary}} onClick={handleClick}>{options[selectedIndex]}</Button>
           <Button
             color="secondary"
@@ -87,7 +80,7 @@ export default function DropButton(props) {
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList id="split-button-menu">
+                  <MenuList id="split-button-menu" >
                     {options.map((option, index) => (
                       <MenuItem
                         key={option}

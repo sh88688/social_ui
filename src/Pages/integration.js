@@ -16,6 +16,7 @@ import TwitterStepper from '../moduleStepper/Twitter/twitterStepper';
 import FacebookStepper from '../moduleStepper/Facebook/facebookStepper';
 import FacebookConfig from '../moduleStepper/Facebook/facebookConfig';
 import GoogleConfig from '../moduleStepper/GooglePlay/googleConfig';
+import InstaConfig from '../moduleStepper/Instagram/instaConfig';
 
 //import Json Schema
 import formJson from '../FormSchema/emailSetting.json';
@@ -78,6 +79,8 @@ const CONFIGER = (props) => {
         return <FacebookConfig  info={props.info} handler={props.handler} />;
     case "google_play":
         return <GoogleConfig  info={props.info} handler={props.handler} />;
+    case "instagram":
+          return <InstaConfig  info={props.info} handler={props.handler} />;
     default:
     //console.log(module);
     break;
@@ -133,7 +136,7 @@ handleConfig = (module) =>{
   this.setState({EDITCONFIG : true, CONFIGER : module});
 }
 handleUninstall = (module) => {
-  const Func = {google_play:"playStoreConfiguration",facebook:"facebookConfiguration",twitter:"",instagram:""};
+  const Func = {google_play:"playStoreConfiguration",facebook:"facebookConfiguration",twitter:"",instagram:"instagramConfiguration"};
   //Loader Start
   let copy_SOCIAL_LOADER = {...this.state.SOCIAL_LOADER};
   copy_SOCIAL_LOADER[module] = true;

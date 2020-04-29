@@ -4,14 +4,11 @@ import { Typography, CircularProgress, AppBar, Slide, Toolbar, withStyles, IconB
 import { CloseIcon } from "../theme/muiIcons";
 
 //Components
-import isFormValid from './FormValidSetter';
-import CustomTable from './CustomTableBuilder';
 import CommentList from './CommentTable';
-import DialogBuilder from '../Components/DialogBuilder';
 import NoDataBuilder from '../Components/NoDataBuilder';
 import fetchCall from '../Components/FetchCaller';
 import formJson from '../FormSchema/ticketDialogForm.json';
-import {SERVER_IP, PROTOCOL} from '../Configs/apiConf';
+// import {SERVER_IP, PROTOCOL} from '../Configs/apiConf';
 
 const style = theme =>({
   root:{
@@ -45,36 +42,38 @@ Intial_NODATA.type = "intial";
  class CommentView extends React.Component {
   DEFAULT_JSON = JSON.stringify(formJson);
   constructor(props){
-      super(props);
-      this.state = {
-        ticketType:"",
-        comments: [],
-        dialogOpen : false,
-        dialogTitle : "",
-        dialogContent : "",
-        dataForm: formJson,
-        NO_DATA_CONTENT: Intial_NODATA,
-        Processing: true
-      }
-  }
+        super(props);
+        this.state = {
+          ticketType:"",
+          comments: [],
+          dialogOpen : false,
+          dialogTitle : "",
+          dialogContent : "",
+          dataForm: formJson,
+          NO_DATA_CONTENT: Intial_NODATA,
+          Processing: true
+        }
+    }
     componentDidMount(){
       this.handleFetchComments(this.props.postId);
     }
-    handleFetchComments = (postId) => { 
+     handleFetchComments = postId => { 
         const fetchCallOptions = {
           method: 'GET',
         };
-        const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/GetData/getPostDetails.php?postId=${postId}&type=comment`);
-        fetchCall(url,fetchCallOptions,"json").then((res) => {
-            console.log('CMT RESPONSE ',res.result);
+        // const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/GetData/getPostDetails.php?postId=${postId}&type=comment`);
+        const url = new URL(`https://graph.facebook.com/${postId}/comments?access_token=${this.props.pageToken}`);
+        fetchCall(url,fetchCallOptions,"json").then( res => {
 
-            if(res.result[0]){
-              this.setState({comments: res.result[0].data,Processing : false });
+            if(res.data){
+             const srt = (a, b) => (b.created_time - a.created_time);
+             const data = res.data.map(item => {
+                    item.created_time = Date.parse(item.created_time);
+                    return item;
+              });
+                this.setState({comments: data.sort(srt),Processing : false });
             }
-            else{
-              this.setState({comments: res.result,Processing : false });
-            }
-            
+    
           },
           (error) => {
             //console.log(error);
@@ -83,37 +82,35 @@ Intial_NODATA.type = "intial";
     handleClose = () => {
         this.props.toggle();
     };
-render(){
-    const { classes } = this.props;
-      return (
-      <Dialog  fullScreen TransitionComponent={Transition} open={this.props.open} onClose={this.handleClose} className={classes.root} aria-labelledby="form-dialog-title">
-       <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar >
-            <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography className={classes.title} variant="h6">
-              Comments
-            </Typography>
-            <Button autoFocus color="inherit" onClick={this.handleClose}>
-              Close
-            </Button>
-          </Toolbar>
-        </AppBar>
-        {this.state.Processing ? <div style={{ alignSelf: "center", marginTop: "120px"}}><CircularProgress color="secondary" /> </div> 
-          : 
-          (this.state.comments.length ? <CommentList rows={this.state.comments} pageToken={this.props.pageToken} /> 
-            : <NoDataBuilder
-            isRendor={!this.state.comments.length}
-            title={"No Comments Found!"}
-            description={"Comments are facebook page post's comments."}
-            type={"intial"}
-            />
-          )}
-      </Dialog>
-      );
+    render() {
+        const { classes } = this.props;
+          return (
+          <Dialog  fullScreen TransitionComponent={Transition} open={this.props.open} onClose={this.handleClose} className={classes.root} aria-labelledby="form-dialog-title">
+          <AppBar position="fixed" className={classes.appBar}>
+              <Toolbar >
+                <IconButton edge="start" color="inherit" onClick={this.handleClose} aria-label="close">
+                  <CloseIcon />
+                </IconButton>
+                <Typography className={classes.title} variant="h6">
+                  Comments
+                </Typography>
+                <Button autoFocus color="inherit" onClick={this.handleClose}>
+                  Close
+                </Button>
+              </Toolbar>
+            </AppBar>
+            {this.state.Processing ? <div style={{ alignSelf: "center", marginTop: "120px"}}><CircularProgress color="secondary" /> </div> 
+              : 
+              (this.state.comments.length ? <CommentList rows={this.state.comments} pageToken={this.props.pageToken} /> 
+                : <NoDataBuilder
+                isRendor={!this.state.comments.length}
+                title={"No Comments Found !!"}
+                description={"Comments are facebook page post's comments."}
+                type={"intial"}
+                />
+              )}
+          </Dialog>
+          );
+        }
     }
-
-
-}
 export default withStyles(style)(CommentView);

@@ -11,8 +11,6 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import CommentIcon from '@material-ui/icons/Comment';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
@@ -20,7 +18,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import Avatar from '@material-ui/core/Avatar';
-import DialogBuilder from './DialogParentComment';
+
+//images
+import sad from '../assets/sad.png';
+import haha from '../assets/haha.png';
+import angry from '../assets/angry.png';
+import like from '../assets/like.png';
+import love from '../assets/love.png';
+import wow from '../assets/wow.png';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,9 +51,8 @@ function getSorting(order, orderBy) {
 
 const headCells = [
   { id: 'from', numeric: false, disablePadding: false, label: 'From' },
-  { id: 'message', numeric: false, disablePadding: false, label: 'Message' },
-  { id: 'wrote_on', numeric: false, disablePadding: false, label: 'Wrote On' },
-  { id: 'created_on', numeric: false, disablePadding: false, label: 'Created Time' }
+  { id: 'reaction', numeric: false, disablePadding: false, label: 'Reaction' },
+  { id: 'wrote_on', numeric: false, disablePadding: false, label: 'Reacted On' }
 ];
 
 function EnhancedTableHead(props) {
@@ -197,8 +201,6 @@ export default function EnhancedTable(props) {
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('created_on');
   const [selected, setSelected] = React.useState([]);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [dialogContent, setDialogContent] = React.useState({});
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -207,11 +209,6 @@ export default function EnhancedTable(props) {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-  const getParentComment = (parentId) =>{
-    const commentIndex = props.rows.findIndex(row => row.comment_id === parentId);
-    setDialogContent(props.rows[commentIndex]);
-    setDialogOpen(true);
-  }
   const handleSelectAllClick = event => {
     if (event.target.checked) {
       const newSelecteds = props.rows.map(n => n.name);
@@ -220,21 +217,19 @@ export default function EnhancedTable(props) {
     }
     setSelected([]);
   };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const imageEnum = {"HAHA": haha, "SAD" : sad, "ANGRY": angry, "WOW": wow, "LIKE" : like, "LOVE" : love};
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
-    <DialogBuilder isopen={dialogOpen} pageToken={props.pageToken} type="comment" dialogContent={dialogContent} ok={() => setDialogOpen(false)} />
       <Paper className={classes.paper}>
         <TableContainer>
           <Table
@@ -259,7 +254,7 @@ export default function EnhancedTable(props) {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
-                      style={{cursor : "pointer",}}
+                      style={{cursor : "pointer"}}
                       hover
                       key={index}
                     >
@@ -267,24 +262,14 @@ export default function EnhancedTable(props) {
                         <span style={{display:"flex",alignItems:"center", padding:"8px"}}> 
                         <Avatar
                         alt={`Avatar n°${index + 1}`}
-                        src={`https://graph.facebook.com/v5.0/${row.from.id}/picture?access_token=${props.pageToken}`}
+                        src={`https://graph.facebook.com/v5.0/${row.id}/picture?access_token=${props.pageToken}`}
                         /> 
-                        <span style={{marginLeft: "8px"}}>{row.from.name}</span>
+                        <span style={{marginLeft: "8px"}}>{row.name}</span>
                         </span>
                       </TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.message}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{row.action_on === 'comment' ? 
-                      <Tooltip title="VIEW COMMENT">
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={() => getParentComment(row.parent_id)}
-                            className={classes.button}
-                            endIcon={<CommentIcon />}
-                        >
-                            Comment
-                        </Button></Tooltip>: <p>POST</p>}</TableCell>
-                      <TableCell className={classes.textLimit} align="left">{new Date(row.created_time).toLocaleString()}</TableCell>
+                      <TableCell className={classes.textLimit} align="left"><Tooltip title={row.type}><img width="25" height="25" src={imageEnum[row.type]} alt={row.type} /></Tooltip></TableCell>
+                      <TableCell className={classes.textLimit} align="left">POST</TableCell>
+                        {/* <TableCell className={classes.textLimit} align="left">{new Date(row.created_time).toLocaleString()}</TableCell> */}
                     </TableRow>
                   );
                 })}

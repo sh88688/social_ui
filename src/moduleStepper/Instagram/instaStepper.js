@@ -18,7 +18,7 @@ import formJson2 from '../../FormSchema/facebookForm2.json';
 
 //Material UI
 import {makeStyles, withStyles, Button} from "../../theme/muiComponents";
-import {FlagIcon, FacebookIcon, DoneIcon} from "../../theme/muiIcons";
+import {FlagIcon, InstagramIcon, DoneIcon} from "../../theme/muiIcons";
 import {SERVER_IP, PROTOCOL, ROUTE_FOLDER} from '../../Configs/apiConf';
 
 const ColorlibConnector = withStyles({
@@ -73,7 +73,7 @@ function ColorlibStepIcon(props) {
   const { active, completed } = props;
 
   const icons = {
-    1: <FacebookIcon />,
+    1: <InstagramIcon />,
     2: <FlagIcon />,
     3: <DoneIcon />,
   };
@@ -116,7 +116,7 @@ const styles = theme => ({
 });
 
 function getSteps() {
-  return ['Account Login', 'Select Your Facebook Page', 'All Done'];
+  return ['Account Login', 'Select Your Connected Page', 'All Done'];
 }
 
 
@@ -148,7 +148,7 @@ class InstaStepper extends React.Component {
       if(this.props.info !== nextProps.info)
       {
         //console.log("===== [googleStepper.js] componentWillReceiveProps =====",nextProps.info);
-        if(nextProps.info.statusCode === "2001" && nextProps.info.moduleInfo.subModule === 'facebook')
+        if(nextProps.info.statusCode === "2001" && nextProps.info.moduleInfo.subModule === 'instagram')
         {
           this.setState((prevState, props) => {
             return {activeStep: prevState.activeStep + 1, secondForm : JSON.parse(this.DEFAULT_JSON2)};
@@ -165,7 +165,7 @@ getStepContent = (step) => {
     case 1:
       return <SecondForm loading={this.state.Uploading} COMPONENT={this} pageName={this.state.userPageName} pageId={this.state.userPageId} userId={this.state.userId} userToken={this.state.userToken} handler={this.handleFormState} Form={this.state.secondForm} />;
     case 2:
-      return <Typography >Your Facebook Page is Successfully Integrated with CZ Social.</Typography>;
+      return <Typography >Your Instagram Account is Successfully Integrated with CZ Social.</Typography>;
     default:
       return 'Unknown step';
   }
@@ -174,29 +174,27 @@ getStepContent = (step) => {
 handleFormState = (updatedFormState,index) =>{
 	//console.log(`onChangeform`);
 }
-handlePageAccessToken = (page_id, token) =>{
+handlePageConnectedAccount = (page_id, token) =>{
   let promise = new Promise((resolve, reject) => {
 
           const fetchCallOptions = {
             method: 'GET',
           };
-          const url = new URL(`https://graph.facebook.com/v5.0/${page_id}?fields=access_token&access_token=${token}`);  
+          const url = new URL(`https://graph.facebook.com/v6.0/${page_id}?fields=instagram_business_account&access_token=${token}`);  
           fetchCall(url,fetchCallOptions,"json").then((result) => {
-              if(result.access_token){
-                //console.log('PAGE ACCESS TOKEN ',result);
-                  if(result.access_token) {
-                    resolve(result.access_token);
-                  }
-              }         
+           
+                  if(result.instagram_business_account) {
+                    resolve(result.instagram_business_account.id);
+                  }       
             },
             (error) => {
-              //console.log(error);
+              console.log(error);
             });
 
   });
   return promise;
 }
-handlePageSubscribe = (page_id, token) => {
+handleInstagramSubscribe = (instagram_id, token) => {
   let promise = new Promise((resolve, reject) => {
     const data = {};
     data.access_token = token;
@@ -209,7 +207,7 @@ handlePageSubscribe = (page_id, token) => {
       body: JSON.stringify(data)
     }
     //console.log(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
-    const url = new URL(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
+    const url = new URL(`https://graph.facebook.com/v5.0/${instagram_id}/subscribed_apps?subscribed_fields=comments,mentions`);
 
     fetchCall(url,fetchCallOptions,"json").then((result) => {
         if(result.success){
@@ -225,42 +223,38 @@ handlePageSubscribe = (page_id, token) => {
 handlePostData = () => {
 
   if(this.state.userToken !== "" && this.state.secondForm[0].config.value !== ""){
-      this.handlePageAccessToken(this.state.secondForm[0].config.value, this.state.userToken).then( page_access_token => {
+      this.handlePageConnectedAccount(this.state.secondForm[0].config.value, this.state.userToken).then( instagram_id => {
+        if(instagram_id) {                       
+          const Data = {};
+          Data.event = "instagramConfiguration";
+          Data.action="create";
+          Data.client_id= this.props.clientId;
+          Data.event_by="Admin";
+          Data.moduleInfo = {};
+          Data.moduleInfo.module = `${ROUTE_FOLDER}/integration`;
+          Data.moduleInfo.subModule = "instagram";
+          Data.moduleInfo.action="1";
+          Data.moduleInfo.moduleRoute={name: `${ROUTE_FOLDER}/instagram`, value: true};
+          Data.data = {};
+          Data.data.user_id = this.state.userId;
+          Data.data.user_access_token = this.state.userToken;
+          Data.data.page_id = this.state.secondForm[0].config.value;
+          Data.data.page_name = this.state.secondForm[0].config.displaytext;
+          Data.data.instagram_id = instagram_id;
+          const queryParam = JSON.stringify(Data);           
+          const fetchCallOptions = {
+            method: 'GET',
+          };
+          const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
+          fetchCall(url,fetchCallOptions,"text").then((result) => {
+                this.props.tokenCallback(result);
+            },
+            (error) => {
+              //console.log(error);
+            });   
+         }
+        });
 
-        this.handlePageSubscribe(this.state.secondForm[0].config.value, page_access_token).then(res => {
-          //console.log('handlePageSubscribe',res);  
-          if(res === true) {                       
-                const Data = {};
-                Data.event = "facebookConfiguration";
-                Data.action="create";
-                Data.client_id= this.props.clientId;
-                Data.event_by="Admin";
-                Data.moduleInfo = {};
-                Data.moduleInfo.module = `${ROUTE_FOLDER}/integration`;
-                Data.moduleInfo.subModule = "facebook";
-                Data.moduleInfo.action="1";
-                Data.moduleInfo.moduleRoute={name: `${ROUTE_FOLDER}/facebook`, value: true};
-                Data.data = {};
-                Data.data.user_id = this.state.userId;
-                Data.data.user_access_token = this.state.userToken;
-                Data.data.page_id = this.state.secondForm[0].config.value;
-                Data.data.page_name = this.state.secondForm[0].config.displaytext;
-                Data.data.page_access_token = page_access_token;
-                const queryParam = JSON.stringify(Data);           
-                const fetchCallOptions = {
-                  method: 'GET',
-                };
-                const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
-                //console.log(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/save_request.php?reqPacket=${queryParam}`);
-                fetchCall(url,fetchCallOptions,"text").then((result) => {
-                      //console.log(result);
-                      this.props.tokenCallback(result);
-                  },
-                  (error) => {
-                    //console.log(error);
-                  });   
-          }
-      });}); 
   }
   else {
     //console.warn("TOKEN EMPTY");

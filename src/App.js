@@ -12,6 +12,7 @@ import { NotificationsIcon, WhatshotIcon } from "./theme/muiIcons";
 //Center Pages
 import GoogleReview from './Pages/googlePlay';
 import FBCHAT from './Pages/fbChat';
+import INSTA from './Pages/instaFeed';
 import Support from './Pages/support';
 import Profile from './Pages/profile';
 import Integration from './Pages/integration';
@@ -138,7 +139,12 @@ class App extends React.Component {
     {
       path: `${ROUTE_FOLDER}/facebook`,
       exact: true,
-      main: () => <FBCHAT PARENT={this} clientId={this.props.client.client_id} processing={this.state.isLoading} CHAT={this.state.CHAT_STACK} newChat={this.state.newChat} CONFIG={this.state.MODULE_CONFIG['facebook']} tokenCallback={this.getToken} />
+      main: () => <FBCHAT PARENT={this} clientEmail={this.props.client.USERNAME} clientId={this.props.client.client_id} processing={this.state.isLoading} CHAT={this.state.CHAT_STACK} newChat={this.state.newChat} CONFIG={this.state.MODULE_CONFIG['facebook']} tokenCallback={this.getToken} />
+    },
+    {
+      path: `${ROUTE_FOLDER}/instagram`,
+      exact: true,
+      main: () => <INSTA PARENT={this} clientEmail={this.props.client.USERNAME} clientId={this.props.client.client_id} processing={this.state.isLoading} CHAT={this.state.CHAT_STACK} newChat={this.state.newChat} CONFIG={this.state.MODULE_CONFIG['instagram']} tokenCallback={this.getToken} />
     },
     {
       path: `${ROUTE_FOLDER}/google_play`,
@@ -206,7 +212,7 @@ class App extends React.Component {
         [`${ROUTE_FOLDER}/google_play`]: false,
         [`${ROUTE_FOLDER}/twitter`]: false,
         [`${ROUTE_FOLDER}/facebook`]: true,
-        [`${ROUTE_FOLDER}/instagram`]: false,
+        [`${ROUTE_FOLDER}/instagram`]: true,
         [`${ROUTE_FOLDER}/integration`]: true,
         [`${ROUTE_FOLDER}/tickets`]: true,
         [`${ROUTE_FOLDER}/support`]: true,
@@ -291,7 +297,7 @@ class App extends React.Component {
   }
   //handleFacebook
   handleConfigs = (module) => {
-    const configModule = {google_play : "playStoreConfiguration",facebook:"facebookConfiguration",twitter:"",instagram:""};
+    const configModule = {google_play : "playStoreConfiguration",facebook:"facebookConfiguration",twitter:"",instagram:"instagramConfiguration"};
     const fetchCallOptions = {
       method: 'GET',
     };
@@ -531,7 +537,9 @@ class App extends React.Component {
   handleDrawerToggle = () => {
     this.setState({drawerOpen : !this.state.drawerOpen});
   }
-
+  UNSAFE_componentWillReceiveProps(nextProps){
+    this.setMenuItem(nextProps.location.pathname);
+  }
 render(){
 
   const { classes } = this.props;

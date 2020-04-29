@@ -70,7 +70,7 @@ class FirstForm extends React.Component {
       else {                                 
         this.FB.login( response => {
           this.statusChangeCallback(response);
-        },{scope : "pages_show_list,publish_pages,manage_pages,public_profile,email,pages_messaging"}); 
+        },{scope : "instagram_basic,instagram_manage_comments,instagram_manage_insights,pages_show_list,publish_pages,manage_pages,public_profile,email,pages_messaging"}); 
       }
     }
     fetchLongLivedToken = (token) =>{

@@ -49,6 +49,7 @@ const headCells = [
   { id: 'priority', numeric: false, disablePadding: false, label: 'Priority' },
   { id: 'problem_reported', numeric: false, disablePadding: false, label: 'Problem Reported' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+  { id: 'module', numeric: false, disablePadding: false, label: 'Module' },
   { id: 'action_by', numeric: false, disablePadding: false, label: 'Created By' },
   { id: 'action_on', numeric: false, disablePadding: false, label: 'Modified on' },
 ];
@@ -268,6 +269,7 @@ export default function TicketTable(props) {
                       <TableCell className={classes.textLimit} align="left">{row.priority}</TableCell>
                       <TableCell className={classes.textLimit} align="left">{row.problem_reported}</TableCell>
                       <TableCell className={classes.textLimit} align="left">{row.status}</TableCell>
+                      <TableCell className={classes.textLimit} align="left">{row.module === '' ? 'CHAT': row.module}</TableCell>
                       <TableCell className={classes.textLimit} align="left">{row.action_by}</TableCell>
                       <TableCell className={classes.textLimit} align="left">{actionOn}</TableCell>
                     </TableRow>

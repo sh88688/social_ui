@@ -60,18 +60,15 @@ Intial_NODATA.type = "intial";
     handleFormState = (updatedFormState,index) =>{
         ////console.log(`onChange form`);
     }
-    UNSAFE_componentWillReceiveProps(nextProps){
-        if(this.props.open !== nextProps.open && nextProps.open )
-        {
-            this.handleFetchTickets();
-        }
+    componentDidMount(){
+      this.handleFetchTickets();
     }
     handleStatusChange = (status, docket) => {
       const { sender } = this.props.userVariables;
       const Data = {};
       Data.action    = "modify";
       Data.client_id = this.props.clientId;
-      Data.event_by  = "Admin";
+      Data.event_by  = this.props.clientEmail;
       Data.data = {};
       Data.data.docket_no = docket;
       Data.data.status    = status;
@@ -83,8 +80,6 @@ Intial_NODATA.type = "intial";
       const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/createChatTicket.php`);
       fetchCall(url,fetchCallOptions,"json").then((result) => {
         const {statusMsg, statusCode, dataInfo} = result;
-        // console.log(this.state.tickets,'Ticket RESPONSE ',result);  
-       
           if(statusCode === "2001"){
             let docketCopy = [...this.state.tickets];
             let docketIndex = docketCopy.findIndex(e => e.docket_no === docket);
@@ -111,7 +106,7 @@ Intial_NODATA.type = "intial";
         };
         const url = new URL(`${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/api/getTicketHistory.php`);
         fetchCall(url,fetchCallOptions,"json").then((result) => {
-            //console.log('HISTORY RESPONSE ',result);  
+            // console.log('HISTORY RESPONSE ',result);  
             this.setState({tickets: result.tickets,Processing : false });
           },
           (error) => {
