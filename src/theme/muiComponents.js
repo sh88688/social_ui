@@ -53,7 +53,7 @@ import Slide from '@material-ui/core/Slide';
 import TextField from "@material-ui/core/TextField";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@material-ui/core/Typography"; 
 import {drawerWidthRight,drawerWidthLeft } from './drawerConfig';
 import {withStyles, makeStyles, fade } from "@material-ui/core/styles";
 

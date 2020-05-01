@@ -174,31 +174,50 @@ getStepContent = (step) => {
 handleFormState = (updatedFormState,index) =>{
 	//console.log(`onChangeform`);
 }
+getPageAccessToken = (page_id, token) =>{
+  let promise = new Promise((resolve, reject) => {
+      const fetchCallOptions = {
+        method: 'GET',
+      };
+      const url = new URL(`https://graph.facebook.com/v5.0/${page_id}?fields=access_token&access_token=${token}`);  
+      fetchCall(url,fetchCallOptions,"json").then((result) => {
+
+              if(result.access_token) {
+                resolve(result.access_token);
+              }       
+        },
+        (error) => {
+          //console.log(error);
+        });
+    });
+  return promise;
+}
 handlePageConnectedAccount = (page_id, token) =>{
   let promise = new Promise((resolve, reject) => {
 
-          const fetchCallOptions = {
-            method: 'GET',
-          };
-          const url = new URL(`https://graph.facebook.com/v6.0/${page_id}?fields=instagram_business_account&access_token=${token}`);  
-          fetchCall(url,fetchCallOptions,"json").then((result) => {
-           
-                  if(result.instagram_business_account) {
-                    resolve(result.instagram_business_account.id);
-                  }       
-            },
-            (error) => {
-              console.log(error);
-            });
+    this.getPageAccessToken(page_id, token).then(pageToken => {
+      const fetchCallOptions = {
+        method: 'GET',
+      };
+      const url = new URL(`https://graph.facebook.com/v6.0/${page_id}?fields=instagram_business_account&access_token=${token}`);  
+      fetchCall(url,fetchCallOptions,"json").then((result) => {
+       
+              if(result.instagram_business_account) {
+                resolve({instagram_id : result.instagram_business_account.id, page_access_token : pageToken});
+              }       
+        },
+        (error) => {
+          console.log(error);
+        });
+    });    
 
   });
   return promise;
 }
-handleInstagramSubscribe = (instagram_id, token) => {
+handleInstagramSubscribe = (page_id, page_access_token) => {
   let promise = new Promise((resolve, reject) => {
     const data = {};
-    data.access_token = token;
-    //console.log('subscribe token ',data);
+    data.access_token = page_access_token;
     const fetchCallOptions = {
       method: 'POST',
       headers: {
@@ -206,8 +225,7 @@ handleInstagramSubscribe = (instagram_id, token) => {
       },
       body: JSON.stringify(data)
     }
-    //console.log(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=messages,message_deliveries,message_reads,messaging_postbacks,message_echoes`);
-    const url = new URL(`https://graph.facebook.com/v5.0/${instagram_id}/subscribed_apps?subscribed_fields=comments,mentions`);
+    const url = new URL(`https://graph.facebook.com/v5.0/${page_id}/subscribed_apps?subscribed_fields=email`);
 
     fetchCall(url,fetchCallOptions,"json").then((result) => {
         if(result.success){
@@ -223,8 +241,9 @@ handleInstagramSubscribe = (instagram_id, token) => {
 handlePostData = () => {
 
   if(this.state.userToken !== "" && this.state.secondForm[0].config.value !== ""){
-      this.handlePageConnectedAccount(this.state.secondForm[0].config.value, this.state.userToken).then( instagram_id => {
-        if(instagram_id) {                       
+      this.handlePageConnectedAccount(this.state.secondForm[0].config.value, this.state.userToken).then( ({instagram_id, page_access_token}) => {
+        this.handleInstagramSubscribe(this.state.secondForm[0].config.value, page_access_token).then(res => {
+        if(res) {                       
           const Data = {};
           Data.event = "instagramConfiguration";
           Data.action="create";
@@ -254,7 +273,7 @@ handlePostData = () => {
             });   
          }
         });
-
+      });
   }
   else {
     //console.warn("TOKEN EMPTY");

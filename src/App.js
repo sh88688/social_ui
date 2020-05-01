@@ -131,6 +131,7 @@ class App extends React.Component {
   //Notification Channel URL
   serverURL = `${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/notification/notification.php`;
   chatServerURL = `${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/notification/fbchat.php`;
+  instaServerURL = `${PROTOCOL}${SERVER_IP}/CZ_SOCIAL/notification/notificationInsta.php`;
   sseSource = null;
   sseChatSource = null;
 
@@ -144,7 +145,7 @@ class App extends React.Component {
     {
       path: `${ROUTE_FOLDER}/instagram`,
       exact: true,
-      main: () => <INSTA PARENT={this} clientEmail={this.props.client.USERNAME} clientId={this.props.client.client_id} processing={this.state.isLoading} CHAT={this.state.CHAT_STACK} newChat={this.state.newChat} CONFIG={this.state.MODULE_CONFIG['instagram']} tokenCallback={this.getToken} />
+      main: () => <INSTA PARENT={this} clientEmail={this.props.client.USERNAME} clientId={this.props.client.client_id} processing={this.state.isLoading} INSTA={this.state.INSTA_STACK} newChat={this.state.newChat} CONFIG={this.state.MODULE_CONFIG['instagram']} tokenCallback={this.getToken} />
     },
     {
       path: `${ROUTE_FOLDER}/google_play`,
@@ -196,6 +197,7 @@ class App extends React.Component {
       tokenArray:[],
       notiStack:[],
       CHAT_STACK : [],
+      INSTA_STACK : [],
       newChat : null,
       drawerOpen : true,
       notiBadge:0,
@@ -204,6 +206,7 @@ class App extends React.Component {
       MODULE_PACKET:{
         [`${ROUTE_FOLDER}/intentLabel`]:null,
         [`${ROUTE_FOLDER}/integration`]:null,
+        [`${ROUTE_FOLDER}/instagram`]:null,
         [`${ROUTE_FOLDER}/users`]:null,
         [`${ROUTE_FOLDER}/templates`]:null
       },
@@ -248,15 +251,20 @@ class App extends React.Component {
       //Initiating
       try {
         this.sseSource = new EventSource(this.serverURL);
-        this.sseChatSource = new EventSource(this.chatServerURL);
+        this.sseChatSource = new EventSource(this.instaServerURL);
         //console.log ("%c Initiating SSE.","color : orange; font-weight: 800;");
       }catch (e) {
         //console.error ("Unable to initiate SSE.");
       }
       //Fbchat
-      this.sseChatSource.addEventListener("fbChat", (e) => {
+      // this.sseChatSource.addEventListener("fbChat", (e) => {
+      //   //console.log ("%c fbChat received from SSE.","color : orange; font-weight: 800;");
+      //   this.handleChatSSE(e.data,"chat"); 
+      // });
+      //INSTA
+      this.sseChatSource.addEventListener("insta", (e) => {
         //console.log ("%c fbChat received from SSE.","color : orange; font-weight: 800;");
-        this.handleChatSSE(e.data,"chat"); 
+        this.handleInstaSSE(e.data); 
       });
       //Callback
       this.sseSource.addEventListener("callback", (e) => {
@@ -449,6 +457,16 @@ class App extends React.Component {
         
     return promise;
  
+  }
+  //SSE INSTA
+  handleInstaSSE = (msg) =>{
+    const BASE64MSG = base64.decode(msg);
+    const PACKET = JSON.parse(BASE64MSG);
+    console.log('INSTA PACKET');
+    console.table(PACKET);
+    const InstaCopy = [...this.state.INSTA_STACK];
+    InstaCopy.push(PACKET);
+    this.setState({INSTA_STACK : InstaCopy});
   }
   //USER FETCH
   handleUserFetch = (userId, fields) => {
